@@ -37,14 +37,21 @@ LIBFTDIR	=	libft/
 INCDIRLIBFT	=	$(LIBFTDIR)/includes/
 
 SRCSERVER	=	\
-				srcs/server/main.c
+				srcs/server/main.c											\
+				srcs/server/data_processor.c								\
+				srcs/server/lib/server.c									\
+				srcs/server/lib/handler.c									\
+				srcs/server/lib/client.c									\
+				srcs/server/lib/socket_accept.c								\
+				srcs/server/lib/socket_disconnect.c
 
 SRCSSERVER	=	$(addprefix $(SRCDIR), $(SRCSERVER))
 
 OBJSSERVER	=	$(addprefix $(OBJDIR), $(SRCSERVER:.c=.o))
 
 SRCCLIENT	=	\
-				srcs/client/main.c
+				srcs/client/main.c											\
+				srcs/client/aks.c
 
 SRCSCLIENT	=	$(addprefix $(SRCDIR), $(SRCCLIENT))
 

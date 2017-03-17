@@ -10,9 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "irc_server.h"
+
+t_socket_server *load_struct_socket_server(int port)
+{
+	t_socket_server *server;
+
+	if (!(server = malloc(sizeof(t_socket_server))))
+		return (NULL);
+	server->port = port;
+	server->data_processor = data_processor;
+	server->socket_accept = socket_accept;
+	server->socket_disconnect = socket_disconnect;
+	server->send_message_to_all = send_message_to_all;
+	server->clients = NULL;
+	return (server);
+}
+
 int		main(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
-	return (0);
+	int				port;
+	t_socket_server	*server;
+
+	if (argc != 2)
+		return (1);
+	port = ft_atoi(argv[1]);
+	if (port <= 0)
+		return (1);
+	if (!(server = load_struct_socket_server(port)))
+		return (1);
+	return (socket_initialize(server));
 }
