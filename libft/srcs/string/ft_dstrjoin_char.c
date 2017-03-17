@@ -21,6 +21,8 @@ char	*ft_dstrjoin_char(char *s1, char c, short flag)
 	int		i;
 
 	result = NULL;
+	if (s1 == NULL)
+		s1 = ft_strnew(0);
 	pt = s1;
 	i = 0;
 	if (s1 && (result = (char*)malloc(sizeof(char) *

@@ -51,7 +51,13 @@ OBJSSERVER	=	$(addprefix $(OBJDIR), $(SRCSERVER:.c=.o))
 
 SRCCLIENT	=	\
 				srcs/client/main.c											\
-				srcs/client/aks.c
+				srcs/client/data_processor.c								\
+				srcs/client/load_caps.c										\
+				srcs/client/process_cmds.c									\
+				srcs/client/prompt.c										\
+				srcs/client/commands/nick.c									\
+				srcs/client/lib/handler.c									\
+				srcs/client/lib/socket_session.c
 
 SRCSCLIENT	=	$(addprefix $(SRCDIR), $(SRCCLIENT))
 

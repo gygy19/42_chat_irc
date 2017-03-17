@@ -32,7 +32,7 @@
 
 # define DEFAULT_PROTOCOL 0
 
-# define DEBUG_MODE 0
+# define DEBUG_MODE 1
 
 typedef struct			s_client
 {

@@ -26,7 +26,18 @@ static int	socket_connection_is_estabilised(int fd)
 		printf("n'est pas disponible dans ce domaine de communication.\n");
 		return (0);
 	}
+	if (fd == 2)
+	{
+		printf("Erreur : Socket error stderr\n");
+		return (0);
+	}
 	return (1);
+}
+
+static int	bind_error(void)
+{
+	printf("Error : Socket addresse is occuped\n");
+	return (0);
 }
 
 int			send_message_to_all(t_socket_server *server, char *message)
@@ -56,8 +67,9 @@ int			socket_initialize(t_socket_server *server)
 	server->serv_addr.sin_family = PROT_INTERNET_IPV4;
 	server->serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);//INADDR_ANY == 0.0.0.0
 	server->serv_addr.sin_port = htons(server->port);
-	bind(server->listenfd, (struct sockaddr*)&server->serv_addr,\
-		sizeof(server->serv_addr));
+	if (bind(server->listenfd, (struct sockaddr*)&server->serv_addr,\
+		sizeof(server->serv_addr)) < 0)
+		return (bind_error());
 	listen(server->listenfd, 10);
 	sa_len = sizeof(server->serv_addr);
 	getsockname(0, (struct sockaddr*)&server->serv_addr, &sa_len);
