@@ -36,7 +36,7 @@ static int	socket_connection_is_estabilised(int fd)
 
 static int	bind_error(void)
 {
-	printf("Error : Socket addresse is occuped\n");
+	printf("Error : Socket address is busy\n");
 	return (0);
 }
 
@@ -55,7 +55,6 @@ int			send_message_to_all(t_socket_server *server, char *message)
 
 int			socket_initialize(t_socket_server *server)
 {
-	char		sendbuff[1024 + 1];
 	socklen_t	sa_len;
 
 	server->listenfd = socket(PROT_INTERNET_IPV4,\
@@ -63,7 +62,6 @@ int			socket_initialize(t_socket_server *server)
 	if (!socket_connection_is_estabilised(server->listenfd))
 		return (0);
 	ft_memset(&server->serv_addr, '0', sizeof(struct sockaddr_in));
-	ft_memset(sendbuff, '0', sizeof(sendbuff));
 	server->serv_addr.sin_family = PROT_INTERNET_IPV4;
 	server->serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);//INADDR_ANY == 0.0.0.0
 	server->serv_addr.sin_port = htons(server->port);

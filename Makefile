@@ -12,7 +12,7 @@
 
 NAME		=	irc
 
-SERVER		=	server
+SERVER		=	serveur
 
 CLIENT		=	client
 
