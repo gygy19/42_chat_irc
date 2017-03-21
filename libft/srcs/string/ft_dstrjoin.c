@@ -21,6 +21,8 @@ char	*ft_dstrjoin(char *s1, char *s2, short flag)
 	char	*pt2;
 
 	result = NULL;
+	if (s1 == NULL)
+		s1 = ft_strnew(0);
 	pt1 = s1;
 	pt2 = s2;
 	if (s1 && (result = ft_strnew(

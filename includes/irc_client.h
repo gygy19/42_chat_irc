@@ -43,10 +43,22 @@ typedef struct			s_events
 	void				(*read)();
 }						t_events;
 
+typedef struct			s_channel
+{
+	int					id;
+	char				*name;
+	int					count_users;
+	struct s_channel	*right;
+	struct s_channel	*left;
+	struct s_channel	*(*next)();
+	char				**users;
+}						t_channel;
+
 typedef struct			s_cmds
 {
 	char				*cmd;
-	long int			time;
+	struct s_cmds		*right;
+	struct s_cmds		*left;
 }						t_cmds;
 
 typedef struct			s_socket_client
@@ -58,7 +70,9 @@ typedef struct			s_socket_client
 	struct sockaddr_in	serv_addr;
 	struct hostent		*server;
 	struct s_events		events[2];
-	struct s_cmds		cmds[99];
+	struct s_cmds		*cmds;
+	struct s_cmds		*current_cmd;
+	struct s_channel	*channels;
 	int					(*send)();
 }						t_socket_client;
 
@@ -74,15 +88,30 @@ int						client_handler(t_socket_client *client);
 ** Prog client
 */
 int						load_console(void);
+void					restart_line(void);
 void					data_processor(t_socket_client *client, char *message);
 void					switch_cmds(t_socket_client *client, char *cmd);
 void					read_keys(t_socket_client *client);
 void					reprint_line(t_socket_client *client);
-void					print_prompt(int start, t_socket_client *client);
+void					print_prompt(t_socket_client *client);
 
 /*
 ** commands
 */
+t_cmds					*new_cmds(t_socket_client *client);
 int						check_nick_cmd(t_socket_client *client, char *cmd);
+int						check_leave_cmd(t_socket_client *client, char *cmd);
+int						check_who_cmd(t_socket_client *client, char *cmd);
+int						check_mp_cmd(t_socket_client *client, char *cmd);
+int						check_connect_cmd(t_socket_client *client, char *cmd);
+int						check_join_cmd(t_socket_client *client, char *cmd);
+
+/*
+** Channels
+*/
+t_channel				*next_channel(t_channel *current);
+t_channel				*add_channel(t_socket_client *client, char *infos);
+void					remove_channel(t_socket_client * client, int channelid);
+void					print_channels(t_socket_client *client);
 
 #endif

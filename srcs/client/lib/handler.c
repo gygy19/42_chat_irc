@@ -39,11 +39,10 @@ int		client_handler(t_socket_client *client)
 	return (0);
 }
 
-
 int		send_message(t_socket_client *client, char *suffix, char *message)
 {
 	int r;
-	
+
 	if (message == NULL || ft_strlen(message) <= 0)
 		return (0);
 	message = ft_dstrjoin(suffix, message, 2);
@@ -53,12 +52,11 @@ int		send_message(t_socket_client *client, char *suffix, char *message)
 	return (!(r < 0));
 }
 
-
 void	received_message(t_socket_client *client)
 {
 	int		ret;
 	char	*message;
-	char 	buffer[1024 + 1];
+	char	buffer[1024 + 1];
 
 	message = NULL;
 	while ((ret = recv(client->sockfd, buffer, 1024, 0)) > 0)

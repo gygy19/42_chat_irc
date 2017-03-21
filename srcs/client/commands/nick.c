@@ -18,15 +18,15 @@ int		check_nick_cmd(t_socket_client *client, char *cmd)
 
 	if (ft_strncmp(cmd, "/nick", 5) != 0)
 		return (0);
-	split = ft_split_string(cmd, " ");
-	if (array_length(split) != 2)
+	if (!(split = ft_split_string(cmd, " ")))
+		return (0);
+	if (array_length(split) != 2 || client->host == NULL)
 	{
-		ft_printf("NickName i don't have good length (1,9)characters\n");
+		ft_printf("/nick [nickname]\n");
+		free_array(split);
 		return (0);
 	}
 	send_message(client, "NC", ft_strdup(split[1]));
-	ft_strdel(&split[0]);
-	ft_strdel(&split[1]);
-	free(split);
+	free_array(split);
 	return (1);
 }

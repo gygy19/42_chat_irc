@@ -31,6 +31,7 @@ t_client	*add_new_client(t_socket_server *server, int fd)
 	c->read = received_message;
 	c->send = send_message;
 	c->left = NULL;
+	c->right = NULL;
 	if (server->clients == NULL)
 		server->clients = c;
 	else

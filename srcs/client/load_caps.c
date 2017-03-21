@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "irc_client.h"
+#include <term.h>
 
 int		load_console(void)
 {
@@ -19,7 +20,7 @@ int		load_console(void)
 	term = (struct termios *)malloc(sizeof(struct termios));
 	if (tcgetattr(0, term) == -1)
 	{
-		ft_printf("[modif_term] Failed request tcgetattr!\n");
+		printf("[modif_term] Failed request tcgetattr!\n");
 		return (0);
 	}
 	term->c_lflag &= ~(ICANON | ECHO);

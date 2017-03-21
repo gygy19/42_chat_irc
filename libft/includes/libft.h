@@ -112,6 +112,7 @@ char				**ft_split_string(char const *s, char *c);
 unsigned int		ft_lenbychar(char *s, char c);
 char				*ft_replace(char *str, char *old, char *new);
 char				*ft_strdelandnew(char **del, int size);
+int					ft_is_string_printable(char *str);
 
 /*
 ** LST
@@ -147,6 +148,14 @@ char				*ft_uitoa(unsigned long long int c);
 void				ft_qsort(void *base, size_t mmemb, char *type,\
 					int(*compar)(const void *, const void *));
 size_t				array_length(char **array);
+void				free_array(char **array);
+
+/*
+** Utils
+*/
+# define TIME_SEC 500000000
+# define TIME_MILLIS (TIME_SEC / 1000)
+void				ft_sleep(int millis);
 
 # define ___N0		STDERR_FILENO, "{bold}{red}ERROR{white} %s:%i:{reset}\t"
 # define ___N1		__FILE__, __LINE__

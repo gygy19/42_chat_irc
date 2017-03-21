@@ -6,7 +6,7 @@
 #    By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/25 15:18:38 by jguyet            #+#    #+#              #
-#    Updated: 2017/03/06 17:42:15 by jguyet           ###   ########.fr        #
+#    Updated: 2017/03/19 04:47:40 by jguyet           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ MAX_COLS	=	$$(echo "$$(tput cols)-20-$(LENGTHNAME)"|bc)
 
 CC			=	gcc
 
-FLAGS		=	-Wall -Wextra -Werror -O3 -ggdb
+FLAGS		=	-Wall -Wextra -Werror 
 
 SRCDIR		=	
 
@@ -39,6 +39,7 @@ INCDIRLIBFT	=	$(LIBFTDIR)/includes/
 SRCSERVER	=	\
 				srcs/server/main.c											\
 				srcs/server/data_processor.c								\
+				srcs/server/channels.c										\
 				srcs/server/lib/server.c									\
 				srcs/server/lib/handler.c									\
 				srcs/server/lib/client.c									\
@@ -54,8 +55,14 @@ SRCCLIENT	=	\
 				srcs/client/data_processor.c								\
 				srcs/client/load_caps.c										\
 				srcs/client/process_cmds.c									\
+				srcs/client/channels.c										\
 				srcs/client/prompt.c										\
 				srcs/client/commands/nick.c									\
+				srcs/client/commands/join.c									\
+				srcs/client/commands/leave.c								\
+				srcs/client/commands/who.c									\
+				srcs/client/commands/mp.c									\
+				srcs/client/commands/connect.c								\
 				srcs/client/lib/handler.c									\
 				srcs/client/lib/socket_session.c
 

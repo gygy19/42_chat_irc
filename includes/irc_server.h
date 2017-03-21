@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <libft.h>
+#include <printf.h>
 #include <mapft.h>
 #include <unistd.h>
 
@@ -34,6 +35,17 @@
 
 # define DEBUG_MODE 1
 
+# define MAX_CHANNELS 5
+
+typedef struct			s_channel
+{
+	int					id;
+	char				*name;
+	struct s_channel	*right;
+	struct s_channel	*left;
+	struct s_channel	*(*next)();
+}						t_channel;
+
 typedef struct			s_client
 {
 	int					fd;
@@ -42,6 +54,7 @@ typedef struct			s_client
 	struct s_client		*(*next)();
 	int					(*read)();
 	int					(*send)();
+	int					channels[MAX_CHANNELS];
 }						t_client;
 
 typedef struct			s_socket_server
@@ -50,17 +63,18 @@ typedef struct			s_socket_server
 	int					listenfd;
 	int					connfd;
 	struct sockaddr_in	serv_addr;
-	void				(*data_processor)();
+	int					(*data_processor)();
 	int					(*send_message_to_all)();
 	struct s_client		*(*socket_accept)();
 	struct s_client		*(*socket_disconnect)();
 	struct s_client		*clients;
+	struct s_channel	*channels;
 }						t_socket_server;
 
 /*
 ** Prog server
 */
-void					data_processor(t_socket_server *server,\
+int						data_processor(t_socket_server *server,\
 						t_client *client, char *message);
 
 /*
@@ -79,5 +93,14 @@ t_client				*next_client(t_client *current);
 t_client				*add_new_client(t_socket_server *server, int fd);
 int						send_message(t_client *client, char *message);
 int						received_message(t_socket_server *server, t_client *client);
+
+/*
+** Channels
+*/
+int						add_client_to_channel(t_channel *channel, t_client *client);
+void					load_channels(t_socket_server *server);
+t_channel				*next_channel(t_channel *current);
+t_channel				*add_channel(t_socket_server *server, int id, char *name);
+void					remove_channel(t_socket_server *server, int channelid);
 
 #endif

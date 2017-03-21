@@ -12,7 +12,7 @@
 
 #include "irc_server.h"
 
-t_socket_server *load_struct_socket_server(int port)
+t_socket_server	*load_struct_socket_server(int port)
 {
 	t_socket_server *server;
 
@@ -27,7 +27,7 @@ t_socket_server *load_struct_socket_server(int port)
 	return (server);
 }
 
-int		main(int argc, char **argv)
+int				main(int argc, char **argv)
 {
 	int				port;
 	t_socket_server	*server;
@@ -39,5 +39,6 @@ int		main(int argc, char **argv)
 		return (1);
 	if (!(server = load_struct_socket_server(port)))
 		return (1);
+	load_channels(server);
 	return (socket_initialize(server));
 }

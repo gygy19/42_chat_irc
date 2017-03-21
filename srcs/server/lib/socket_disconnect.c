@@ -20,22 +20,17 @@ t_client	*socket_disconnect(t_socket_server *server, t_client *client)
 	left = client->left;
 	right = client->right;
 	printf("Client (%d) Disconnect\n", client->fd);
-	if (left)
+	if (left && right)
 	{
-		if (right)
-			left->right = right;
-		else
-			left->right = NULL;
+		right->left = left;
+		left->right = right;
 	}
-	if (right)
+	if (left && !right)
+		left->right = NULL;
+	if (!left && right)
 	{
-		if (left)
-			right->left = left;
-		else
-		{
-			right->left = NULL;
-			server->clients = right;
-		}
+		right->left = NULL;
+		server->clients = right;
 	}
 	if (client->right == NULL && client->left == NULL)
 		server->clients = NULL;

@@ -6,7 +6,7 @@
 #    By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/25 15:18:38 by jguyet            #+#    #+#              #
-#    Updated: 2016/07/12 19:17:15 by jguyet           ###   ########.fr        #
+#    Updated: 2017/03/19 04:49:16 by jguyet           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ MAX_COLS	=	$$(echo "$$(tput cols)-20-$(LENGTHNAME)"|bc)
 
 CC			=	gcc
 
-FLAGS		=	-Wall -Wextra -Werror -O3 -ggdb
+FLAGS		=	-Wall -Wextra -Werror
 
 SRCDIR		=	srcs/
 
@@ -89,6 +89,8 @@ SRCBASE		=	\
 				bonus/ft_lstnew.c							\
 				array/ft_qsort.c							\
 				array/array_length.c						\
+				array/free_array.c							\
+				utils/ft_sleep.c							\
 				list/ft_lstaddend.c							\
 				list/ft_lstsplit.c							\
 				list/ft_putlst.c							\
@@ -112,6 +114,7 @@ SRCBASE		=	\
 				string/ft_split_string.c					\
 				string/ft_replace.c							\
 				string/ft_strdelandnew.c					\
+				string/ft_is_string_printable.c				\
 				printf/add/add_char.c						\
 				printf/add/add_int.c						\
 				printf/add/add_long.c						\

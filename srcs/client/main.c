@@ -12,7 +12,7 @@
 
 #include "irc_client.h"
 
-t_socket_client *load_struct_socket_client(void)
+t_socket_client	*load_struct_socket_client(void)
 {
 	int				i;
 	t_socket_client	*client;
@@ -23,14 +23,16 @@ t_socket_client *load_struct_socket_client(void)
 	client->host = NULL;
 	client->port = 0;
 	client->pseudo = NULL;
+	client->channels = NULL;
 	client->send = send_message;
+	client->current_cmd = new_cmds(client);
 	i = -1;
 	while (i++ < 100)
 		client->cmds[i].cmd = NULL;
 	return (client);
 }
 
-int		main(int argc, char **argv)
+int				main(int argc, char **argv)
 {
 	t_socket_client *client;
 
@@ -42,7 +44,7 @@ int		main(int argc, char **argv)
 	client->events[1].fd = 0;
 	client->events[1].read = read_keys;
 	load_console();
-	print_prompt(1, client);
+	print_prompt(client);
 	client_handler(client);
 	return (0);
 }
