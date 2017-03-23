@@ -32,8 +32,15 @@
 # define PROT_INTERNET_IPV6 AF_INET6
 
 # define BINARY_SOCK_FLUX SOCK_STREAM
+# define NON_BLOCK_SOCK_FLUX 04000
 
 # define DEFAULT_PROTOCOL 0
+
+# define SOL_TCP 6
+
+# define TCP_KEEPCNT 5
+# define TCP_KEEPIDLE 5
+# define TCP_KEEPINTVL 1
 
 # define MODE_DEBUG 1
 
@@ -72,8 +79,10 @@ typedef struct			s_socket_client
 	struct s_events		events[2];
 	struct s_cmds		*cmds;
 	struct s_cmds		*current_cmd;
-	struct s_channel	*channels;
+	struct s_channel	*channel;
 	int					(*send)();
+	char				*(*serialize)(const char *, ...);
+	char				*message;
 }						t_socket_client;
 
 /*
@@ -105,12 +114,13 @@ int						check_who_cmd(t_socket_client *client, char *cmd);
 int						check_mp_cmd(t_socket_client *client, char *cmd);
 int						check_connect_cmd(t_socket_client *client, char *cmd);
 int						check_join_cmd(t_socket_client *client, char *cmd);
+int						check_message_cmd(t_socket_client *client, char *cmd);
 
 /*
 ** Channels
 */
 t_channel				*next_channel(t_channel *current);
-t_channel				*add_channel(t_socket_client *client, char *infos);
+t_channel				*set_channel(t_socket_client *client, char *infos);
 void					remove_channel(t_socket_client * client, int channelid);
 void					print_channels(t_socket_client *client);
 

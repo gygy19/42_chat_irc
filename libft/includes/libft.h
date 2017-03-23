@@ -133,6 +133,7 @@ int					ft_nbrlen(long long int nbr);
 int					ft_max(int min, int nbr);
 char				*ft_convert_double_to_string(double nbr, \
 					unsigned int precision);
+int					ft_atoi_base(const char *str, int str_base);
 
 /*
 ** UINT

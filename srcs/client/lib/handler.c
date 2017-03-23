@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "irc_client.h"
+#include "xor.h"
 
 int		client_handler(t_socket_client *client)
 {
@@ -41,35 +42,39 @@ int		client_handler(t_socket_client *client)
 
 int		send_message(t_socket_client *client, char *suffix, char *message)
 {
-	int r;
+	int		r;
+	char	*crypted;
+	char	*print;
 
 	if (message == NULL || ft_strlen(message) <= 0)
 		return (0);
-	message = ft_dstrjoin(suffix, message, 2);
-	ft_printf("send MESSAGE : %s\n", message);
-	r = send(client->sockfd, message, ft_strlen(message), 0);
+	message = ft_dstrjoin_char(ft_dstrjoin(suffix, message, 2), '\n', 1);
+	crypted = crypt_string_to_xor(message);
+	print = print_crypted(crypted);
+	message[ft_strlen(message) - 1] = '\0';
+	//ft_printf("{yellow}Send Message Crypted     : %s{reset}\n", print);
+	//ft_printf("{blue}Send Message             : Action[%c] Type[%c]{reset}\n", message[0], message[1]);
+	r = send(client->sockfd, crypted, ft_strlen(crypted), 0);
 	ft_strdel(&message);
+	ft_strdel(&print);
+	ft_strdel(&crypted);
 	return (!(r < 0));
 }
 
 void	received_message(t_socket_client *client)
 {
-	int		ret;
-	char	*message;
-	char	buffer[1024 + 1];
+	size_t	ret;
+	char	*uncrypted;
+	char	*print;
+	char	buffer[1 + 1];
 
-	message = NULL;
-	while ((ret = recv(client->sockfd, buffer, 1024, 0)) > 0)
-	{
-		buffer[ret] = '\0';
-		if (message == NULL)
-			message = ft_strdup(buffer);
-		else
-			message = ft_dstrjoin(message, buffer, 1);
-		if (ret < 1024)
-			break ;
-	}
-	if (message == NULL)
+	ret = recv(client->sockfd, buffer, 1, 0);
+	buffer[ret] = '\0';
+	if (client->message == NULL)
+		client->message = ft_strdup(buffer);
+	else
+		client->message = ft_dstrjoin(client->message, buffer, 1);
+	if (ft_strlen(client->message) == 0)
 	{
 		client->host = NULL;
 		client->events[1].fd = 0;
@@ -77,6 +82,18 @@ void	received_message(t_socket_client *client)
 		reprint_line(client);
 		return ;
 	}
-	data_processor(client, message);
-	ft_strdel(&message);
+	uncrypted = uncrypt_xor_to_string(client->message);
+	if (uncrypted[ft_strlen(uncrypted) - 1] != '\n')
+		return ;
+	uncrypted[ft_strlen(uncrypted) - 1] = '\0';
+	print = print_crypted(client->message);
+	ft_putstr("\033[u\033[K\033[1A");
+	//ft_printf("{yellow}Received Message Crypted : %s{reset}\n", print);
+	//ft_printf("{blue}Received Message         : Action[%c] Type[%c]{reset}\n", uncrypted[0], uncrypted[1]);
+	data_processor(client, uncrypted);
+	ft_strdel(&print);
+	ft_strdel(&uncrypted);
+	ft_strdel(&client->message);
+	client->message = NULL;
+	ft_strdel(&client->message);
 }

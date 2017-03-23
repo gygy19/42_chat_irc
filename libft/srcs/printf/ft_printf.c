@@ -106,3 +106,22 @@ int			ft_asprintf(char **ptr, const char *s, ...)
 	va_end(string->list);
 	return (string->res);
 }
+
+char		*ft_sprintf(const char *s, ...)
+{
+	t_string	*string;
+	char		*res;
+
+	if (!(string = (t_string *)malloc(sizeof(t_string))))
+		return (NULL);
+	string->s = (char*)s;
+	string->res = 0;
+	string->new = ft_strnew(BUFFER);
+	string->sub_num = NULL;
+	load_ptr_function(string);
+	va_start(string->list, (char*)s);
+	parse_flags(string, 0);
+	res = string->new;
+	va_end(string->list);
+	return (res);
+}

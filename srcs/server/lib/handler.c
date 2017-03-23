@@ -33,7 +33,7 @@ static void	check_clients_fds(t_socket_server *server, fd_set *rdfs)
 	client = server->clients;
 	while (client != NULL)
 	{
-		if (FD_ISSET(client->fd, rdfs))
+		if (client->fd != 0 && FD_ISSET(client->fd, rdfs))
 		{
 			if (client->read(server, client) == 0)
 			{

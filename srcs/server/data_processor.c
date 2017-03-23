@@ -12,6 +12,20 @@
 
 #include "irc_server.h"
 
+int			autentificate_client(t_socket_server *server, t_client *client)
+{
+	t_channel *channel;
+
+	channel = server->channels;
+	while (channel != NULL)
+	{
+		client->send(client, client->serialize("CA%d|%s", channel->id, channel->name));
+		channel = channel->next(channel);
+	}
+	client->send(client, client->serialize("NC%s", client->nickname));
+	return (0);
+}
+
 int			nickname_action(t_socket_server *server, t_client *client,\
 	char type, char *nick)
 {
@@ -33,7 +47,6 @@ int			channel_join(t_socket_server *server, t_client *client,\
 {
 	t_channel	*channel;
 	int			exists;
-	char		*message;
 
 	exists = 0;
 	channel = server->channels;
@@ -48,17 +61,23 @@ int			channel_join(t_socket_server *server, t_client *client,\
 	}
 	if (exists == 0)
 	{
-		client->send(client, ft_dstrjoin("CE", channel_name, 2));
+		client->send(client, client->serialize("CE%s", channel_name));
 		return (1);
 	}
-	if (!add_client_to_channel(channel, client))
-	{
-		ft_asprintf(&message, "CC%d|%s", channel->id, channel->name);
-		client->send(client, message);
+	if (client->channel != NULL && client->channel->id == channel->id)
 		return (1);
-	}
-	ft_asprintf(&message, "CJ%d|%s", channel->id, channel->name);
-	client->send(client, message);
+	channel->join(server, channel, client);
+	return (0);
+}
+
+int			channel_message(t_socket_server *server, t_client *client,\
+	char *message)
+{
+	if (message == NULL || ft_strlen(message) == 0)
+		return (1);
+	if (client->nickname == NULL || client->channel == NULL)
+		return (1);
+	client->channel->add_message(server, client->channel, client, message);
 	return (0);
 }
 
@@ -70,9 +89,9 @@ int			channel_action(t_socket_server *server, t_client *client,\
 	if (message == NULL)
 		return (1);
 	if (type == 'J')
-	{
 		return (channel_join(server, client, message));
-	}
+	if (type == 'M')
+		return (channel_message(server, client, message));
 	return (0);
 }
 
@@ -85,7 +104,7 @@ int			data_processor(t_socket_server *server, t_client *client,\
 
 	action = '\0';
 	type = '\0';
-	printf("Reveived Message :%s\n", message);
+	//printf("Reveived Message :%s\n", message);
 	if (ft_strlen(message) > 0)
 		action = message[0];
 	if (ft_strlen(message) > 1)
@@ -95,5 +114,7 @@ int			data_processor(t_socket_server *server, t_client *client,\
 		return (channel_action(server, client, type, finalmessage));
 	if (action == 'N')
 		return (nickname_action(server, client, type, finalmessage));
+	if (action == 'W' && type == 'B')
+		return (autentificate_client(server, client));
 	return (0);
 }

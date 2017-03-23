@@ -1,25 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   socket_accept.c                                    :+:      :+:    :+:   */
+/*   xor.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/17 07:12:11 by jguyet            #+#    #+#             */
-/*   Updated: 2017/03/17 07:12:13 by jguyet           ###   ########.fr       */
+/*   Created: 2017/03/22 23:27:38 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/22 23:27:39 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "irc_server.h"
+#ifndef XOR_H
+# define XOR_H
 
-t_client	*socket_accept(t_socket_server *server, int fd)
-{
-	t_client *client;
+# ifdef XOR_PROG
 
-	if (!(client = add_new_client(server, fd)))
-		return (NULL);
-	ft_printf("New TCP connexion\n");
-	client->nickname = ft_sprintf("guest%d", client->fd);
-	client->send(client, client->serialize("WM"));
-	return (client);
-}
+#  include <printf.h>
+#  include <libft.h>
+
+# endif
+
+# define XOR_KEY "JGUYET"
+
+char		*crypt_string_to_xor(char *msg);
+char		*uncrypt_xor_to_string(char *crypted);
+char		*print_crypted(char *crypted);
+
+#endif

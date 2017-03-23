@@ -107,6 +107,7 @@ int				parse_flags(t_string *string, int i)
 		i = sub_flags(string, i);
 		i = select_convert(string, i, 0, 0);
 		save = i + 1;
+		string->tmp = NULL;
 		i = parse_ptr(string, i);
 		restart_string_params(string);
 	}

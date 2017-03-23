@@ -44,6 +44,9 @@ typedef struct			s_channel
 	struct s_channel	*right;
 	struct s_channel	*left;
 	struct s_channel	*(*next)();
+	void				(*join)();
+	void				(*send)();
+	void				(*add_message)();
 }						t_channel;
 
 typedef struct			s_client
@@ -54,7 +57,10 @@ typedef struct			s_client
 	struct s_client		*(*next)();
 	int					(*read)();
 	int					(*send)();
-	int					channels[MAX_CHANNELS];
+	char				*(*serialize)(const char *, ...);
+	char				*message;
+	char				*nickname;
+	struct s_channel	*channel;
 }						t_client;
 
 typedef struct			s_socket_server
@@ -85,6 +91,7 @@ t_client				*socket_accept(t_socket_server *server, int fd);
 t_client				*socket_disconnect(t_socket_server *server, t_client *client);
 int						socket_handler(t_socket_server *server);
 int						send_message_to_all(t_socket_server *server, char *message);
+t_socket_server			*singleton_socket_server(int port);
 
 /*
 ** Client

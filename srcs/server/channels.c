@@ -25,23 +25,50 @@ t_channel	*next_channel(t_channel *current)
 	return (current->right);
 }
 
-int			add_client_to_channel(t_channel *channel, t_client *client)
+char		*get_channel_users(t_socket_server *server, t_channel *channel)
 {
-	int i;
+	t_client	*c;
+	char		*users;
 
-	i = 0;
-	while (client->channels[i] && i < MAX_CHANNELS)
+	c = server->clients;
+	users = NULL;
+	while (c)
 	{
-		if (client->channels[i] == channel->id)
-			return (0);
-		if (client->channels[i] == 0)
-		{
-			client->channels[i] = channel->id;
-			break ;
-		}
-		i++;
+		if (users != NULL && c->channel != NULL && c->channel->id == channel->id)
+			users = ft_dstrjoin(users, ft_strjoin("|", c->nickname), 3);
+		else if (c->channel != NULL && c->channel->id == channel->id)
+			users = ft_strdup(c->nickname);
+		c = c->next(c);
 	}
-	return (1);
+	if (users == NULL)
+		users = ft_strnew(0);
+	return (users);
+}
+
+void		send_channel_users(t_socket_server *server, t_channel *channel, char *data)
+{
+	t_client	*c;
+
+	c = server->clients;
+	while (c)
+	{
+		if (c->channel != NULL && c->channel->id == channel->id)
+			c->send(c, ft_strdup(data));
+		c = c->next(c);
+	}
+	ft_strdel(&data);
+}
+
+void		join_channel(t_socket_server *server, t_channel *channel, t_client *client)
+{
+	client->channel = channel;
+	channel->send(server, channel, client->serialize("CJ%s", client->nickname));
+	client->send(client, client->serialize("CA%s|%s", channel->id, channel->name));
+}
+
+void		add_message(t_socket_server *server, t_channel *channel, t_client *client, char *message)
+{
+	channel->send(server, channel, client->serialize("CM%s|%s", client->nickname, message));
 }
 
 t_channel	*add_channel(t_socket_server *server, int id, char *name)
@@ -56,6 +83,9 @@ t_channel	*add_channel(t_socket_server *server, int id, char *name)
 	channel->next = next_channel;
 	channel->right = NULL;
 	channel->left = NULL;
+	channel->join = join_channel;
+	channel->send = send_channel_users;
+	channel->add_message = add_message;
 	if (server->channels == NULL)
 		server->channels = channel;
 	else

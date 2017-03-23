@@ -32,9 +32,9 @@ t_client	*socket_disconnect(t_socket_server *server, t_client *client)
 		right->left = NULL;
 		server->clients = right;
 	}
+	client->fd = 0;
 	if (client->right == NULL && client->left == NULL)
 		server->clients = NULL;
-	free(&client);
 	if (right)
 		return (right);
 	return (NULL);

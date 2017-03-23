@@ -19,10 +19,9 @@ t_channel	*next_channel(t_channel *current)
 	return (current->right);
 }
 
-t_channel	*add_channel(t_socket_client *client, char *infos)
+t_channel	*set_channel(t_socket_client *client, char *infos)
 {
 	t_channel	*channel;
-	t_channel	*tmp;
 	char		**split;
 
 	if (!(split = ft_split_string(infos, "|")))
@@ -37,44 +36,14 @@ t_channel	*add_channel(t_socket_client *client, char *infos)
 	channel->next = next_channel;
 	channel->right = NULL;
 	channel->left = NULL;
-	if (client->channels == NULL)
-		client->channels = channel;
-	else
-	{
-		tmp = client->channels;
-		while (tmp->right != NULL)
-			tmp = tmp->next(tmp);
-		tmp->right = channel;
-		channel->left = tmp;
-	}
+	client->channel = channel;
 	return (channel);
 }
 
 void		remove_channel(t_socket_client *client, int channelid)
 {
-	t_channel	*channel;
-	t_channel	*left;
-	t_channel	*right;
-
-	channel = client->channels;
-	while (channel)
-	{
-		if (channel->id == channelid)
-		{
-			right = channel->right;
-			left = channel->left;
-			if (left && right && (right->left = left))
-				left->right = right;
-			if (left && !right)
-				left->right = NULL;
-			if (!left && right)
-			{
-				right->left = NULL;
-				client->channels = right;
-			}
-		}
-		channel = channel->next(channel);
-	}
+	if (client->channel != NULL && client->channel->id == channelid)
+		client->channel = NULL;
 }
 
 void		print_channels(t_socket_client *client)
@@ -82,8 +51,8 @@ void		print_channels(t_socket_client *client)
 	t_channel	*channel;
 
 	ft_putstr("Channels -> ");
-	channel = client->channels;
-	while (channel)
+	channel = client->channel;
+	if (channel)
 	{
 		ft_putstr("\033[47;30m");
 		ft_printf("%.8s", channel->name);

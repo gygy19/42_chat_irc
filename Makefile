@@ -24,7 +24,7 @@ MAX_COLS	=	$$(echo "$$(tput cols)-20-$(LENGTHNAME)"|bc)
 
 CC			=	gcc
 
-FLAGS		=	-Wall -Wextra -Werror 
+FLAGS		=	-Wall -Wextra -Werror -ggdb
 
 SRCDIR		=	
 
@@ -44,6 +44,8 @@ SRCSERVER	=	\
 				srcs/server/lib/handler.c									\
 				srcs/server/lib/client.c									\
 				srcs/server/lib/socket_accept.c								\
+				srcs/server/lib/sig.c										\
+				srcs/xor/xor.c												\
 				srcs/server/lib/socket_disconnect.c
 
 SRCSSERVER	=	$(addprefix $(SRCDIR), $(SRCSERVER))
@@ -63,7 +65,9 @@ SRCCLIENT	=	\
 				srcs/client/commands/who.c									\
 				srcs/client/commands/mp.c									\
 				srcs/client/commands/connect.c								\
+				srcs/client/commands/message.c								\
 				srcs/client/lib/handler.c									\
+				srcs/xor/xor.c												\
 				srcs/client/lib/socket_session.c
 
 SRCSCLIENT	=	$(addprefix $(SRCDIR), $(SRCCLIENT))

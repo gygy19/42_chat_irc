@@ -48,6 +48,8 @@ void			switch_cmds(t_socket_client *client, char *cmd)
 		return ;
 	if (check_join_cmd(client, cmd))
 		return ;
+	if (check_message_cmd(client, cmd))
+		return ;
 }
 
 void			del_entry(t_socket_client *client)

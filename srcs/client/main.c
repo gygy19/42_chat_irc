@@ -23,9 +23,11 @@ t_socket_client	*load_struct_socket_client(void)
 	client->host = NULL;
 	client->port = 0;
 	client->pseudo = NULL;
-	client->channels = NULL;
+	client->channel = NULL;
 	client->send = send_message;
 	client->current_cmd = new_cmds(client);
+	client->message = NULL;
+	client->serialize = ft_sprintf;
 	i = -1;
 	while (i++ < 100)
 		client->cmds[i].cmd = NULL;
