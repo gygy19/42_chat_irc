@@ -60,9 +60,13 @@ int			send_message(t_client *client, char *message)
 	crypted = crypt_string_to_xor(message);
 	print = print_crypted(crypted);
 	message[ft_strlen(message) - 1] = '\0';
-	ft_printf("{yellow}Send Message Crypted     : %s{reset}\n", print);
-	ft_printf("{blue}Send Message             : Action[%c] Type[%c]{reset}\n", message[0], message[1]);
-	r = send(client->fd, crypted, ft_strlen(crypted), 0);
+	r = 0;
+	if (ft_strlen(message) < 400)
+	{
+		ft_printf("{yellow}Send Message Crypted     : %s{reset}\n", print);
+		ft_printf("{blue}Send Message             : Action[%c] Type[%c]{reset}\n", message[0], message[1]);
+		r = send(client->fd, crypted, ft_strlen(crypted), 0);
+	}
 	ft_strdel(&message);
 	ft_strdel(&print);
 	ft_strdel(&crypted);
@@ -89,9 +93,12 @@ int			received_message(t_socket_server *server, t_client *client)
 		return (ret);
 	uncrypted[ft_strlen(uncrypted) - 1] = '\0';
 	print = print_crypted(client->message);
-	ft_printf("{yellow}Received Message Crypted : %s{reset}\n", print);
-	ft_printf("{blue}Received Message         : Action[%c] Type[%c]{reset}\n", uncrypted[0], uncrypted[1]);
-	server->data_processor(server, client, uncrypted);
+	if (ft_strlen(uncrypted) < 400)
+	{
+		ft_printf("{yellow}Received Message Crypted : %s{reset}\n", print);
+		ft_printf("{blue}Received Message         : Action[%c] Type[%c]{reset}\n", uncrypted[0], uncrypted[1]);
+		server->data_processor(server, client, uncrypted);
+	}
 	ft_strdel(&print);
 	ft_strdel(&uncrypted);
 	ft_strdel(&client->message);

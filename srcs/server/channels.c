@@ -25,6 +25,22 @@ t_channel	*next_channel(t_channel *current)
 	return (current->right);
 }
 
+t_channel *get_channel(t_socket_server *server, char *name)
+{
+	t_channel *channel;
+
+	channel = server->channels;
+	while (channel)
+	{
+		if (ft_strcmp(channel->name, name) == 0)
+		{
+			return (channel);
+		}
+		channel = channel->next(channel);
+	}
+	return (NULL);
+}
+
 char		*get_channel_users(t_socket_server *server, t_channel *channel)
 {
 	t_client	*c;
@@ -59,11 +75,18 @@ void		send_channel_users(t_socket_server *server, t_channel *channel, char *data
 	ft_strdel(&data);
 }
 
+void		left_channel(t_socket_server *server, t_channel *channel, t_client *client)
+{
+	channel->send(server, channel, client->serialize("CL%s", client->nickname));
+}
+
 void		join_channel(t_socket_server *server, t_channel *channel, t_client *client)
 {
+	if (client->channel != NULL)
+		left_channel(server, client->channel, client);
 	client->channel = channel;
 	channel->send(server, channel, client->serialize("CJ%s", client->nickname));
-	client->send(client, client->serialize("CA%s|%s", channel->id, channel->name));
+	client->send(client, client->serialize("CO%d|%s", channel->id, channel->name));
 }
 
 void		add_message(t_socket_server *server, t_channel *channel, t_client *client, char *message)
@@ -79,7 +102,7 @@ t_channel	*add_channel(t_socket_server *server, int id, char *name)
 	if (!(channel = malloc(sizeof(t_channel))))
 		return (NULL);
 	channel->id = id;
-	channel->name = name;
+	channel->name = ft_strdup(name);
 	channel->next = next_channel;
 	channel->right = NULL;
 	channel->left = NULL;

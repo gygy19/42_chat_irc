@@ -25,13 +25,10 @@ void			print_prompt(t_socket_client *client)
 	ft_putstr("\n");
 	ft_putstr("\033[s\033[1A");
 	print_channels(client);
-	if (client->host != NULL)
-		ft_printf("[SRV IRC %s:%d] ", client->host, client->port);
-	if (client->pseudo != NULL)
-		ft_printf("[%s] ", client->pseudo);
-	else if (client->host == NULL)
-		ft_printf("[IRC] ");
-	ft_printf("» ");
+	if (client->host != NULL && client->pseudo != NULL)
+		ft_printf("{color32}<\u2170r\u217D %s:%d>{reset} {color34}<nickname:%s{color166}*{color34}>{reset} {color228}\u2A20{reset}  ", client->host, client->port, client->pseudo);
+	else if (client->host == NULL || client->pseudo == NULL)
+		ft_printf("{color32}<\u2170r\u217D>{reset} {color228}\u2A20{reset} ");
 }
 
 void			restart_line(void)
@@ -46,13 +43,10 @@ void			reprint_line(t_socket_client *client)
 	restart_line();
 	print_channels(client);
 	ft_putstr("\033[K");
-	if (client->host != NULL)
-		ft_printf("[SRV IRC %s:%d] ", client->host, client->port);
-	if (client->pseudo != NULL)
-		ft_printf("[%s] ", client->pseudo);
-	else if (client->host == NULL)
-		ft_printf("[IRC] ");
-	ft_printf("» ");
+	if (client->host != NULL && client->pseudo != NULL)
+		ft_printf("{color32}<\u2170r\u217D %s:%d>{reset} {color34}<nickname:%s{color166}*{color34}>{reset} {color228}\u2A20{reset}  ", client->host, client->port, client->pseudo);
+	else if (client->host == NULL || client->pseudo == NULL)
+		ft_printf("{color32}<\u2170r\u217D>{reset} {color228}\u2A20{reset} ");
 	if (client->current_cmd->cmd != NULL)
 		ft_putstr(client->current_cmd->cmd);
 }

@@ -24,6 +24,7 @@ t_socket_client	*load_struct_socket_client(void)
 	client->port = 0;
 	client->pseudo = NULL;
 	client->channel = NULL;
+	client->channels = NULL;
 	client->send = send_message;
 	client->current_cmd = new_cmds(client);
 	client->message = NULL;

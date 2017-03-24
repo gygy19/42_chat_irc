@@ -80,6 +80,7 @@ typedef struct			s_socket_client
 	struct s_cmds		*cmds;
 	struct s_cmds		*current_cmd;
 	struct s_channel	*channel;
+	struct s_channel	*channels;
 	int					(*send)();
 	char				*(*serialize)(const char *, ...);
 	char				*message;
@@ -89,7 +90,7 @@ typedef struct			s_socket_client
 ** Socket
 */
 int						aks_initialize_connection(t_socket_client *client);
-int						send_message(t_socket_client *client, char *suffix, char *message);
+int						send_message(t_socket_client *client, char *message);
 void					received_message(t_socket_client *client);
 int						client_handler(t_socket_client *client);
 
@@ -120,8 +121,14 @@ int						check_message_cmd(t_socket_client *client, char *cmd);
 ** Channels
 */
 t_channel				*next_channel(t_channel *current);
-t_channel				*set_channel(t_socket_client *client, char *infos);
+t_channel				*new_channel(t_socket_client *client, char *infos);
 void					remove_channel(t_socket_client * client, int channelid);
 void					print_channels(t_socket_client *client);
+
+/*
+** Window
+*/
+size_t					get_size_x(void);
+size_t					get_size_y(void);
 
 #endif

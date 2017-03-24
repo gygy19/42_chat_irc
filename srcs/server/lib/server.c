@@ -47,9 +47,10 @@ int			send_message_to_all(t_socket_server *server, char *message)
 	client = server->clients;
 	while (client != NULL)
 	{
-		client->send(message);
+		client->send(client, client->serialize(message));
 		client = client->next(client);
 	}
+	ft_strdel(&message);
 	return (1);
 }
 

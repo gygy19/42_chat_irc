@@ -104,6 +104,7 @@ int						received_message(t_socket_server *server, t_client *client);
 /*
 ** Channels
 */
+t_channel				*get_channel(t_socket_server *server, char *name);
 int						add_client_to_channel(t_channel *channel, t_client *client);
 void					load_channels(t_socket_server *server);
 t_channel				*next_channel(t_channel *current);

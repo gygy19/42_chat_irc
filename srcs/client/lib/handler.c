@@ -40,7 +40,7 @@ int		client_handler(t_socket_client *client)
 	return (0);
 }
 
-int		send_message(t_socket_client *client, char *suffix, char *message)
+int		send_message(t_socket_client *client, char *message)
 {
 	int		r;
 	char	*crypted;
@@ -48,7 +48,7 @@ int		send_message(t_socket_client *client, char *suffix, char *message)
 
 	if (message == NULL || ft_strlen(message) <= 0)
 		return (0);
-	message = ft_dstrjoin_char(ft_dstrjoin(suffix, message, 2), '\n', 1);
+	message = ft_dstrjoin_char(message, '\n', 1);
 	crypted = crypt_string_to_xor(message);
 	print = print_crypted(crypted);
 	message[ft_strlen(message) - 1] = '\0';
@@ -87,7 +87,7 @@ void	received_message(t_socket_client *client)
 		return ;
 	uncrypted[ft_strlen(uncrypted) - 1] = '\0';
 	print = print_crypted(client->message);
-	ft_putstr("\033[u\033[K\033[1A");
+	ft_putstr("\033[u\033[K\033[1A\033[K");
 	//ft_printf("{yellow}Received Message Crypted : %s{reset}\n", print);
 	//ft_printf("{blue}Received Message         : Action[%c] Type[%c]{reset}\n", uncrypted[0], uncrypted[1]);
 	data_processor(client, uncrypted);

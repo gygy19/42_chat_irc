@@ -67,6 +67,7 @@ SRCCLIENT	=	\
 				srcs/client/commands/connect.c								\
 				srcs/client/commands/message.c								\
 				srcs/client/lib/handler.c									\
+				srcs/client/window/size.c									\
 				srcs/xor/xor.c												\
 				srcs/client/lib/socket_session.c
 

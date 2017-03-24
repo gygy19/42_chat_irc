@@ -165,11 +165,17 @@ void			read_keys(t_socket_client *client)
 	{
 		modif_cmd(client, keys, key);
 	}
-	else if (key == '\n' && client->cmds[0].cmd != NULL)
+	else if (key == '\n' && client->current_cmd->cmd != NULL)
 	{
 		if (client->current_cmd->right != NULL)
 			replace_cmd(client);
-		ft_putstr("\033[u\033[K\033[1A");
+		ft_putstr("\033[u\033[K\033[1A\033[K");
+		if (get_size_x() < ft_strlen(client->current_cmd->cmd) + (ft_strlen(client->host) + ft_strlen(client->pseudo) + 21))
+		{
+			int lines = (ft_strlen(client->current_cmd->cmd) + (ft_strlen(client->host) + ft_strlen(client->pseudo) + 21)) / get_size_x();
+			while (lines-- > 0)
+				ft_printf("\033[1A\033[K");
+		}
 		switch_cmds(client, client->current_cmd->cmd);
 		client->current_cmd = new_cmds(client);
 		ft_putstr("\n\033[s");

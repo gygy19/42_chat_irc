@@ -13,80 +13,72 @@
 #include "libft.h"
 #include <stdlib.h>
 
-static char	*delim(char *s, char c)
+static char	*delimitor(char *s, char c)
 {
-	if (s)
+	int		i;
+
+	i = 0;
+	while (s[i])
 	{
-		if (*s == c)
-		{
-			s++;
-		}
-		return (s);
+		if (s[i] != c)
+			break ;
+		i += 1;
 	}
-	return (NULL);
+	return (s + i);
 }
 
-static int	size_occus(char *s, char c)
+static int	first_delimitor(char *s, char **m, char c)
 {
-	int size;
+	int		i;
 
-	size = 0;
-	if (s)
+	i = 0;
+	while (s[i])
 	{
-		while (*s)
-		{
-			if (*s != c)
-				size++;
-			s++;
-		}
+		if (s[i] == c)
+			break ;
+		i++;
 	}
-	return (size);
+	*m = (s + i);
+	return (i);
 }
 
-static char	**split(char **result, char *s, char c)
+static int	get_la(char *s, char c)
 {
-	int		x;
-	int		y;
 	char	*tmp;
+	int		i;
 
-	x = 0;
-	y = 0;
-	while (s && c && *s)
+	i = 0;
+	while (s[0])
 	{
-		if (*s == c)
-		{
-			if ((s = delim((char*)s, c)) && !*s)
-				break ;
-			result[y][x] = '\0';
-			y++;
-			tmp = ft_memalloc(size_occus((char*)s, c) + 1);
-			result[y] = tmp;
-			x = 0;
-		}
-		if (*s != c)
-			result[y][x] = *s;
-		s++;
-		x++;
+		if (!(s = delimitor(s, c))[0])
+			break ;
+		first_delimitor(s, &tmp, c);
+		s = tmp;
+		i++;
 	}
-	return (result);
+	return (i);
 }
 
 char		**ft_strsplit(char const *s, char c)
 {
-	char	**result;
+	char	**split;
+	int		i;
 	char	*tmp;
+	char	*t;
 
-	if (!s)
+	if (!s || !(split = (char **)malloc(sizeof(char *) \
+		* (get_la((char *)s, c) + 1))))
 		return (NULL);
-	result = NULL;
-	if (!(result = malloc(sizeof(char*) *
-		(ft_lenbychar((char*)s, c)) + 1)))
-		return (NULL);
-	s = delim((char*)s, c);
-	if (!*s)
-		return (result);
-	tmp = ft_memalloc(size_occus((char*)s, c) + 1);
-	result[0] = tmp;
-	result = split(result, (char*)s, c);
-	return (result);
+	i = 0;
+	t = (char*)s;
+	while (t[0])
+	{
+		if (!(t = delimitor(t, c))[0])
+			break ;
+		split[i] = ft_strndup(t, first_delimitor(t, &tmp, c));
+		t = tmp;
+		i++;
+	}
+	split[i] = NULL;
+	return (split);
 }

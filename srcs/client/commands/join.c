@@ -26,7 +26,7 @@ int		check_join_cmd(t_socket_client *client, char *cmd)
 		free_array(split);
 		return (0);
 	}
-	send_message(client, "CJ", ft_strdup(split[1]));
+	send_message(client, client->serialize("CJ%s", split[1]));
 	free_array(split);
 	return (1);
 }

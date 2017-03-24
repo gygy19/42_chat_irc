@@ -26,7 +26,7 @@ int		check_nick_cmd(t_socket_client *client, char *cmd)
 		free_array(split);
 		return (0);
 	}
-	send_message(client, "NC", ft_strdup(split[1]));
+	send_message(client, client->serialize("NC%s", split[1]));
 	free_array(split);
 	return (1);
 }

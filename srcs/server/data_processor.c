@@ -35,9 +35,16 @@ int			nickname_action(t_socket_server *server, t_client *client,\
 	if (type == 'C')
 	{
 		if (ft_strlen(nick) > 9 || ft_strlen(nick) < 2)
-			client->send(client, ft_dstrjoin("NL", nick, 2));
-		else
-			client->send(client, ft_dstrjoin("NC", nick, 2));
+		{
+			client->send(client, client->serialize("NL%s", nick));
+			return (1);
+		}
+		client->send(client, client->serialize("NC%s", nick));
+		if (client->channel != NULL)
+			client->channel->send(server, client->channel, client->serialize("CN%s|%s", client->nickname, nick));
+		if (client->nickname != NULL)
+			ft_strdel(&client->nickname);
+		client->nickname = ft_strdup(nick);
 	}
 	return (0);
 }
@@ -46,23 +53,13 @@ int			channel_join(t_socket_server *server, t_client *client,\
 	char *channel_name)
 {
 	t_channel	*channel;
-	int			exists;
 
-	exists = 0;
-	channel = server->channels;
-	while (channel)
+	channel = get_channel(server, channel_name);
+	
+	if (channel == NULL)
 	{
-		if (ft_strcmp(channel->name, channel_name) == 0)
-		{
-			exists = 1;
-			break ;
-		}
-		channel = channel->next(channel);
-	}
-	if (exists == 0)
-	{
-		client->send(client, client->serialize("CE%s", channel_name));
-		return (1);
+		channel = add_channel(server, (int)channel_name, channel_name);
+		server->send_message_to_all(server, client->serialize("CA%d|%s", channel->id, channel->name));
 	}
 	if (client->channel != NULL && client->channel->id == channel->id)
 		return (1);
@@ -104,7 +101,6 @@ int			data_processor(t_socket_server *server, t_client *client,\
 
 	action = '\0';
 	type = '\0';
-	//printf("Reveived Message :%s\n", message);
 	if (ft_strlen(message) > 0)
 		action = message[0];
 	if (ft_strlen(message) > 1)
