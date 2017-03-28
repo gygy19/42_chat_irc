@@ -21,6 +21,7 @@ void			load(t_string *t)
 		if (!ft_strcmp(t->sub_num, ".") || !ft_strcmp(t->sub_num, ".0")
 			|| !ft_strcmp(t->sub_num, "0.0") || !ft_strcmp(t->sub_num, "0."))
 		{
+			ft_strdel(&t->tmp);
 			t->tmp = NULL;
 		}
 	}

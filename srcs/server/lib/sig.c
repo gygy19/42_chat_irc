@@ -15,7 +15,7 @@
 
 void	ctrlc(int i)
 {
-	t_socket_server *server;
+	t_socket_server	*server;
 
 	if (i == SIGINT)
 	{
@@ -31,7 +31,7 @@ void	ctrlc(int i)
 
 void	ctrlz(int i)
 {
-	t_socket_server *server;
+	t_socket_server	*server;
 
 	if (i == SIGTSTP)
 	{
@@ -47,8 +47,8 @@ void	ctrlz(int i)
 
 void	ctrlq(int i)
 {
-	t_socket_server *server;
-	
+	t_socket_server	*server;
+
 	if (i == SIGQUIT)
 	{
 		server = singleton_socket_server(-1);

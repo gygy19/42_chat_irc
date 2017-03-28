@@ -34,38 +34,6 @@ int		connect_connection_is_estabilised(t_socket_client *client, int ret)
 	return (1);
 }
 
-void	set_sock_timeout(t_socket_client *client)
-{
-	int sndtimeout;
-	int rcvtimeout;
-	int enableKeepAlive;
-	socklen_t optlen;
-	int optval;
-
-	rcvtimeout = 2000;
-	sndtimeout = 2000;
-	enableKeepAlive = 1;
-	optlen = sizeof(rcvtimeout);
-	if (getsockopt(client->sockfd, SOL_SOCKET, SO_RCVTIMEO, &optval, &optlen) > -1)
-	{
-		setsockopt(client->sockfd, SOL_SOCKET, SO_RCVTIMEO, &rcvtimeout, sizeof(rcvtimeout));
-		getsockopt(client->sockfd, SOL_SOCKET, SO_RCVTIMEO, &optval, &optlen);
-		printf("SO_RCVTIMEO : %d\n", optval);
-	}
-	if (getsockopt(client->sockfd, SOL_SOCKET, SO_SNDTIMEO, &optval, &optlen) > -1)
-	{
-		setsockopt(client->sockfd, SOL_SOCKET, SO_SNDTIMEO, &sndtimeout, sizeof(sndtimeout));
-		getsockopt(client->sockfd, SOL_SOCKET, SO_SNDTIMEO, &optval, &optlen);
-		printf("SO_SNDTIMEO : %d\n", optval);
-	}
-	if (getsockopt(client->sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, &optlen) > -1)
-	{
-		setsockopt(client->sockfd, SOL_SOCKET, SO_KEEPALIVE, &enableKeepAlive, sizeof(enableKeepAlive));
-		getsockopt(client->sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, &optlen);
-		printf("SO_KEEPALIVE : %d\n", optval);
-	}
-}
-
 int		aks_initialize_connection(t_socket_client *client)
 {
 	client->sockfd = socket(PROT_INTERNET_IPV4,\

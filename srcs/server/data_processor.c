@@ -19,7 +19,8 @@ int			autentificate_client(t_socket_server *server, t_client *client)
 	channel = server->channels;
 	while (channel != NULL)
 	{
-		client->send(client, client->serialize("CA%d|%s", channel->id, channel->name));
+		client->send(client,\
+			client->serialize("CA%d|%s", channel->id, channel->name));
 		channel = channel->next(channel);
 	}
 	client->send(client, client->serialize("NC%s", client->nickname));
@@ -41,7 +42,8 @@ int			nickname_action(t_socket_server *server, t_client *client,\
 		}
 		client->send(client, client->serialize("NC%s", nick));
 		if (client->channel != NULL)
-			client->channel->send(server, client->channel, client->serialize("CN%s|%s", client->nickname, nick));
+			client->channel->send(server, client->channel,\
+				client->serialize("CN%s|%s", client->nickname, nick));
 		if (client->nickname != NULL)
 			ft_strdel(&client->nickname);
 		client->nickname = ft_strdup(nick);
@@ -55,11 +57,11 @@ int			channel_join(t_socket_server *server, t_client *client,\
 	t_channel	*channel;
 
 	channel = get_channel(server, channel_name);
-	
 	if (channel == NULL)
 	{
 		channel = add_channel(server, (int)channel_name, channel_name);
-		server->send_message_to_all(server, client->serialize("CA%d|%s", channel->id, channel->name));
+		server->send_message_to_all(server,\
+			client->serialize("CA%d|%s", channel->id, channel->name));
 	}
 	if (client->channel != NULL && client->channel->id == channel->id)
 		return (1);

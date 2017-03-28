@@ -13,7 +13,7 @@
 #include "irc_client.h"
 #include "xor.h"
 
-int		client_handler(t_socket_client *client)
+int			client_handler(t_socket_client *client)
 {
 	fd_set	rdfs;
 	int		i;
@@ -40,7 +40,7 @@ int		client_handler(t_socket_client *client)
 	return (0);
 }
 
-int		send_message(t_socket_client *client, char *message)
+int			send_message(t_socket_client *client, char *message)
 {
 	int		r;
 	char	*crypted;
@@ -52,8 +52,6 @@ int		send_message(t_socket_client *client, char *message)
 	crypted = crypt_string_to_xor(message);
 	print = print_crypted(crypted);
 	message[ft_strlen(message) - 1] = '\0';
-	//ft_printf("{yellow}Send Message Crypted     : %s{reset}\n", print);
-	//ft_printf("{blue}Send Message             : Action[%c] Type[%c]{reset}\n", message[0], message[1]);
 	r = send(client->sockfd, crypted, ft_strlen(crypted), 0);
 	ft_strdel(&message);
 	ft_strdel(&print);
@@ -61,11 +59,17 @@ int		send_message(t_socket_client *client, char *message)
 	return (!(r < 0));
 }
 
-void	received_message(t_socket_client *client)
+void		server_disconnect(t_socket_client *client)
+{
+	client->host = NULL;
+	client->events[1].fd = 0;
+	client->events[1].read = read_keys;
+	reprint_line(client);
+}
+
+static void	read_new_message(t_socket_client *client)
 {
 	size_t	ret;
-	char	*uncrypted;
-	char	*print;
 	char	buffer[1 + 1];
 
 	ret = recv(client->sockfd, buffer, 1, 0);
@@ -76,24 +80,30 @@ void	received_message(t_socket_client *client)
 		client->message = ft_dstrjoin(client->message, buffer, 1);
 	if (ft_strlen(client->message) == 0)
 	{
-		client->host = NULL;
-		client->events[1].fd = 0;
-		client->events[1].read = read_keys;
-		reprint_line(client);
+		server_disconnect(client);
+		ft_strdel(&client->message);
+		client->message = NULL;
 		return ;
 	}
+}
+
+void		received_message(t_socket_client *client)
+{
+	char	*uncrypted;
+	char	*print;
+
+	read_new_message(client);
+	if (client->message == NULL)
+		return ;
 	uncrypted = uncrypt_xor_to_string(client->message);
 	if (uncrypted[ft_strlen(uncrypted) - 1] != '\n')
 		return ;
 	uncrypted[ft_strlen(uncrypted) - 1] = '\0';
 	print = print_crypted(client->message);
 	ft_putstr("\033[u\033[K\033[1A\033[K");
-	//ft_printf("{yellow}Received Message Crypted : %s{reset}\n", print);
-	//ft_printf("{blue}Received Message         : Action[%c] Type[%c]{reset}\n", uncrypted[0], uncrypted[1]);
 	data_processor(client, uncrypted);
 	ft_strdel(&print);
 	ft_strdel(&uncrypted);
 	ft_strdel(&client->message);
 	client->message = NULL;
-	ft_strdel(&client->message);
 }

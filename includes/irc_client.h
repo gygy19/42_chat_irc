@@ -89,6 +89,8 @@ typedef struct			s_socket_client
 /*
 ** Socket
 */
+int						open_socket_connection(t_socket_client *client,\
+						char *formated_ip, int port);
 int						aks_initialize_connection(t_socket_client *client);
 int						send_message(t_socket_client *client, char *message);
 void					received_message(t_socket_client *client);
@@ -116,6 +118,11 @@ int						check_mp_cmd(t_socket_client *client, char *cmd);
 int						check_connect_cmd(t_socket_client *client, char *cmd);
 int						check_join_cmd(t_socket_client *client, char *cmd);
 int						check_message_cmd(t_socket_client *client, char *cmd);
+
+/*
+** MESSAGES
+*/
+void					channel_action(t_socket_client *client, char type, char *message);
 
 /*
 ** Channels

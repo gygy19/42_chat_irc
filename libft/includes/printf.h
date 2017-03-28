@@ -54,6 +54,7 @@ typedef struct			s_string
 	char				*s;
 	va_list				list;
 	unsigned int		res;
+	unsigned int		size;
 	t_convert			converter;
 	unsigned short		sub_flags;
 	char				*sub_num;
@@ -66,12 +67,13 @@ typedef struct			s_string
 	short				base;
 	short				end;
 	char				*tmp;
+	int					tmp_alloc;
 	void				*ptrs[conv_len];
 	char				is_big;
 	wchar_t				*wtmp;
 }						t_string;
 
-#  define BUFFER 4096
+#  define BUFFER 1024
 #  define FLAG string->s + (i + 1)
 #  define SECURE string->s[i + 1] != '\0'
 #  define AI (i = i + 1)

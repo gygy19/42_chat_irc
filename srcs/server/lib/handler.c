@@ -45,7 +45,8 @@ static void	check_clients_fds(t_socket_server *server, fd_set *rdfs)
 	}
 }
 
-static void	set_socket_server_fd(t_socket_server *server, fd_set *rdfs, int *maxfd)
+static void	set_socket_server_fd(t_socket_server *server,\
+	fd_set *rdfs, int *maxfd)
 {
 	if (*maxfd < server->listenfd)
 		*maxfd = server->listenfd;

@@ -154,6 +154,29 @@ void			modif_cmd(t_socket_client *client, char *keys, int key)
 	add_string_cmd(client, keys);
 }
 
+void			escape_line(t_socket_client *client)
+{
+	size_t	cmd_len;
+	int		lines;
+
+	cmd_len = 0;
+	cmd_len += ft_strlen(client->current_cmd->cmd);
+	if (client->host)
+		cmd_len += ft_strlen(client->host);
+	if (client->pseudo)
+		cmd_len += ft_strlen(client->pseudo);
+	if (client->host != NULL && client->pseudo != NULL)
+		cmd_len += 22;
+	else
+		cmd_len += 8;
+	if (get_size_x() < cmd_len)
+	{
+		lines = cmd_len / get_size_x();
+		while (lines-- > 0)
+			ft_printf("\033[1A\033[K");
+	}
+}
+
 void			read_keys(t_socket_client *client)
 {
 	int		key;
@@ -170,12 +193,7 @@ void			read_keys(t_socket_client *client)
 		if (client->current_cmd->right != NULL)
 			replace_cmd(client);
 		ft_putstr("\033[u\033[K\033[1A\033[K");
-		if (get_size_x() < ft_strlen(client->current_cmd->cmd) + (ft_strlen(client->host) + ft_strlen(client->pseudo) + 21))
-		{
-			int lines = (ft_strlen(client->current_cmd->cmd) + (ft_strlen(client->host) + ft_strlen(client->pseudo) + 21)) / get_size_x();
-			while (lines-- > 0)
-				ft_printf("\033[1A\033[K");
-		}
+		escape_line(client);
 		switch_cmds(client, client->current_cmd->cmd);
 		client->current_cmd = new_cmds(client);
 		ft_putstr("\n\033[s");
@@ -185,4 +203,5 @@ void			read_keys(t_socket_client *client)
 	{
 		nav_cmd(client, key, keys);
 	}
+	ft_strdel(&keys);
 }

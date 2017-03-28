@@ -18,6 +18,7 @@ static void		conv_process(t_string *string, char *tmp)
 {
 	string->base = 16;
 	string->tmp = tmp;
+	string->tmp_alloc = 1;
 	string->is_negative = 0;
 	string->is_big = 3;
 	precision(string);

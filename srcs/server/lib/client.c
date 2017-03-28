@@ -20,10 +20,25 @@ t_client	*next_client(t_client *current)
 	return (current->right);
 }
 
+static void	add_client_to_server(t_socket_server *server, t_client *c)
+{
+	t_client	*s;
+
+	if (server->clients == NULL)
+		server->clients = c;
+	else
+	{
+		s = server->clients;
+		while (s->right != NULL)
+			s = s->next(s);
+		s->right = c;
+		c->left = s;
+	}
+}
+
 t_client	*add_new_client(t_socket_server *server, int fd)
 {
 	t_client	*c;
-	t_client	*s;
 
 	if (!(c = malloc(sizeof(t_client))))
 		return (NULL);
@@ -37,16 +52,7 @@ t_client	*add_new_client(t_socket_server *server, int fd)
 	c->serialize = ft_sprintf;
 	c->channel = NULL;
 	c->nickname = NULL;
-	if (server->clients == NULL)
-		server->clients = c;
-	else
-	{
-		s = server->clients;
-		while (s->right != NULL)
-			s = s->next(s);
-		s->right = c;
-		c->left = s;
-	}
+	add_client_to_server(server, c);
 	return (c);
 }
 
@@ -64,7 +70,8 @@ int			send_message(t_client *client, char *message)
 	if (ft_strlen(message) < 400)
 	{
 		ft_printf("{yellow}Send Message Crypted     : %s{reset}\n", print);
-		ft_printf("{blue}Send Message             : Action[%c] Type[%c]{reset}\n", message[0], message[1]);
+		ft_printf("{blue}%s: Action[%c] Type[%c]{reset}\n", \
+			"Send Message             ", message[0], message[1]);
 		r = send(client->fd, crypted, ft_strlen(crypted), 0);
 	}
 	ft_strdel(&message);
@@ -73,12 +80,10 @@ int			send_message(t_client *client, char *message)
 	return (!(r < 0));
 }
 
-int			received_message(t_socket_server *server, t_client *client)
+static void	read_new_message(t_client *client)
 {
 	size_t	ret;
 	char	buffer[1 + 1];
-	char	*uncrypted;
-	char	*print;
 
 	ret = recv(client->fd, buffer, 1, 0);
 	buffer[ret] = '\0';
@@ -86,22 +91,31 @@ int			received_message(t_socket_server *server, t_client *client)
 		client->message = ft_strdup(buffer);
 	else
 		client->message = ft_dstrjoin(client->message, buffer, 1);
+}
+
+int			received_message(t_socket_server *server, t_client *client)
+{
+	char	*uncrypted;
+	char	*print;
+
+	read_new_message(client);
 	if (client->message == NULL)
-		return (ret);
+		return (0);
 	uncrypted = uncrypt_xor_to_string(client->message);
 	if (uncrypted[ft_strlen(uncrypted) - 1] != '\n')
-		return (ret);
+		return (0);
 	uncrypted[ft_strlen(uncrypted) - 1] = '\0';
 	print = print_crypted(client->message);
 	if (ft_strlen(uncrypted) < 400)
 	{
 		ft_printf("{yellow}Received Message Crypted : %s{reset}\n", print);
-		ft_printf("{blue}Received Message         : Action[%c] Type[%c]{reset}\n", uncrypted[0], uncrypted[1]);
+		ft_printf("{blue}%s: Action[%c] Type[%c]{reset}\n",\
+			"Received Message         ", uncrypted[0], uncrypted[1]);
 		server->data_processor(server, client, uncrypted);
 	}
 	ft_strdel(&print);
 	ft_strdel(&uncrypted);
 	ft_strdel(&client->message);
 	client->message = NULL;
-	return (ret);
+	return (1);
 }

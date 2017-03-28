@@ -18,6 +18,7 @@ void		flag_default_string(t_string *string, char *tmp, short del)
 {
 	(void)del;
 	string->tmp = ft_strdup(" ");
+	string->tmp_alloc = 1;
 	if (tmp == NULL)
 		add_conv_string(string, "(null)");
 	else

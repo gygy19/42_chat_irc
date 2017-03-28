@@ -24,8 +24,10 @@ int				parse_ptr(t_string *string, int i)
 	while (sptrs[++l])
 		if (sptrs[l] == string->s[i + 1])
 		{
+			ft_strdel(&sptrs);
 			return (get_ptr_function(string, i, string->ptrs[l]));
 		}
+	ft_strdel(&sptrs);
 	if (!ft_strncmp("%", FLAG, 1))
 	{
 		return (conv_purcent(string, i));
@@ -33,6 +35,7 @@ int				parse_ptr(t_string *string, int i)
 	else if (string->sub_num != NULL)
 	{
 		string->tmp = ft_strndup(string->s + i + 1, 1);
+		string->tmp_alloc = 1;
 		string->is_big = 5;
 		add_conv_string(string, string->tmp);
 		return (i + 1);
@@ -84,9 +87,17 @@ void			restart_string_params(t_string *string)
 	string->space = 0;
 	string->zero = 0;
 	string->is_negative = 0;
+	if (string->tmp_alloc)
+	{
+		ft_strdel(&string->tmp);
+		string->tmp_alloc = 0;
+	}
 	string->tmp = NULL;
 	if (string->sub_num != NULL)
+	{
 		ft_strdel(&string->sub_num);
+		string->sub_num = NULL;
+	}
 	string->is_big = 0;
 }
 
@@ -107,7 +118,6 @@ int				parse_flags(t_string *string, int i)
 		i = sub_flags(string, i);
 		i = select_convert(string, i, 0, 0);
 		save = i + 1;
-		string->tmp = NULL;
 		i = parse_ptr(string, i);
 		restart_string_params(string);
 	}

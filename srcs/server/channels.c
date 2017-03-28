@@ -25,7 +25,7 @@ t_channel	*next_channel(t_channel *current)
 	return (current->right);
 }
 
-t_channel *get_channel(t_socket_server *server, char *name)
+t_channel	*get_channel(t_socket_server *server, char *name)
 {
 	t_channel *channel;
 
@@ -50,7 +50,8 @@ char		*get_channel_users(t_socket_server *server, t_channel *channel)
 	users = NULL;
 	while (c)
 	{
-		if (users != NULL && c->channel != NULL && c->channel->id == channel->id)
+		if (users != NULL && c->channel != NULL\
+			&& c->channel->id == channel->id)
 			users = ft_dstrjoin(users, ft_strjoin("|", c->nickname), 3);
 		else if (c->channel != NULL && c->channel->id == channel->id)
 			users = ft_strdup(c->nickname);
@@ -61,7 +62,8 @@ char		*get_channel_users(t_socket_server *server, t_channel *channel)
 	return (users);
 }
 
-void		send_channel_users(t_socket_server *server, t_channel *channel, char *data)
+void		send_channel_users(t_socket_server *server,\
+	t_channel *channel, char *data)
 {
 	t_client	*c;
 
@@ -75,23 +77,28 @@ void		send_channel_users(t_socket_server *server, t_channel *channel, char *data
 	ft_strdel(&data);
 }
 
-void		left_channel(t_socket_server *server, t_channel *channel, t_client *client)
+void		left_channel(t_socket_server *server,\
+	t_channel *channel, t_client *client)
 {
 	channel->send(server, channel, client->serialize("CL%s", client->nickname));
 }
 
-void		join_channel(t_socket_server *server, t_channel *channel, t_client *client)
+void		join_channel(t_socket_server *server,\
+	t_channel *channel, t_client *client)
 {
 	if (client->channel != NULL)
 		left_channel(server, client->channel, client);
 	client->channel = channel;
 	channel->send(server, channel, client->serialize("CJ%s", client->nickname));
-	client->send(client, client->serialize("CO%d|%s", channel->id, channel->name));
+	client->send(client,\
+		client->serialize("CO%d|%s", channel->id, channel->name));
 }
 
-void		add_message(t_socket_server *server, t_channel *channel, t_client *client, char *message)
+void		add_message(t_socket_server *server,\
+	t_channel *channel, t_client *client, char *message)
 {
-	channel->send(server, channel, client->serialize("CM%s|%s", client->nickname, message));
+	channel->send(server, channel,\
+		client->serialize("CM%s|%s", client->nickname, message));
 }
 
 t_channel	*add_channel(t_socket_server *server, int id, char *name)

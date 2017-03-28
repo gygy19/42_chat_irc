@@ -12,7 +12,32 @@
 
 #include "irc_client.h"
 
-int		check_connect_cmd(t_socket_client *client, char *cmd)
+static int	is_valide_ip(char *ip)
+{
+	char	**split;
+	int		i;
+
+	i = 0;
+	if (ip == NULL)
+		return (0);
+	split = ft_split_string(ip, ".");
+	if (array_length(split) != 4)
+	{
+		free_array(split);
+		return (0);
+	}
+	while (i < 4)
+	{
+		if (ft_strlen(split[i]) > 3 || ft_atoi(split[i]) > 255\
+			|| ft_atoi(split[i]) < 0)
+			return (0);
+		i++;
+	}
+	free_array(split);
+	return (1);
+}
+
+int			check_connect_cmd(t_socket_client *client, char *cmd)
 {
 	char	**split;
 
@@ -21,28 +46,19 @@ int		check_connect_cmd(t_socket_client *client, char *cmd)
 	split = ft_split_string(cmd, " ");
 	if (array_length(split) != 3)
 	{
-		printf("/connect <machine> [port]\n");
-		client->host = ft_strdup("127.0.0.1");
-		client->server = gethostbyname(client->host);
-		client->port = 5000;
-		if (aks_initialize_connection(client))
-		{
-			client->events[1].fd = client->sockfd;
-			client->events[1].read = received_message;
-		}
-		else
-			client->host = NULL;
+		ft_printf("/connect <machine> [port]\n");
+		open_socket_connection(client, "127.0.0.1", 5000);
+		free_array(split);
 		return (0);
 	}
-	client->host = ft_strdup(split[1]);
-	client->server = gethostbyname(client->host);
-	client->port = ft_atoi(split[2]);
-	if (aks_initialize_connection(client))
+	if (!is_valide_ip(split[1]))
 	{
-		client->events[1].fd = client->sockfd;
-		client->events[1].read = received_message;
+		ft_printf("Error not comform ip\n");
+		free_array(split);
+		return (0);
 	}
-	else
-		client->host = NULL;
+	if (!open_socket_connection(client, split[1], ft_atoi(split[2])))
+		ft_printf("Error during connection\n");
+	free_array(split);
 	return (1);
 }

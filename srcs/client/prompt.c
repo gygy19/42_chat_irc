@@ -12,12 +12,26 @@
 
 #include "irc_client.h"
 
-void			put_up(void)
+void			print_channels(t_socket_client *client)
 {
-	ft_putchar(8);
-	ft_putchar(27);
-	ft_putchar(1);
-	ft_putchar(74);
+	t_channel	*channel;
+
+	ft_printf("{color189}<Channels_list{reset}");
+	channel = client->channels;
+	if (channel != NULL)
+		ft_printf("{color189}:    {reset}");
+	while (channel)
+	{
+		if (client->channel == channel)
+			ft_putstr("\033[47;30;4m");
+		ft_printf("%.8s", channel->name);
+		if (client->channel == channel)
+			ft_putstr("\033[00m");
+		if (channel->right != NULL)
+			ft_printf("    ");
+		channel = channel->next(channel);
+	}
+	ft_printf("{color189}>{reset}\n");
 }
 
 void			print_prompt(t_socket_client *client)
@@ -26,7 +40,13 @@ void			print_prompt(t_socket_client *client)
 	ft_putstr("\033[s\033[1A");
 	print_channels(client);
 	if (client->host != NULL && client->pseudo != NULL)
-		ft_printf("{color32}<\u2170r\u217D %s:%d>{reset} {color34}<nickname:%s{color166}*{color34}>{reset} {color228}\u2A20{reset}  ", client->host, client->port, client->pseudo);
+	{
+		ft_printf("{color32}<\u2170r\u217D %s:%d>{reset} {color34}",\
+			client->host, client->port);
+		ft_printf("<nickname:%s{color166}*{color34}>{reset} ",\
+			client->pseudo);
+		ft_printf("{color228}\u2A20{reset}  ");
+	}
 	else if (client->host == NULL || client->pseudo == NULL)
 		ft_printf("{color32}<\u2170r\u217D>{reset} {color228}\u2A20{reset} ");
 }
@@ -44,7 +64,13 @@ void			reprint_line(t_socket_client *client)
 	print_channels(client);
 	ft_putstr("\033[K");
 	if (client->host != NULL && client->pseudo != NULL)
-		ft_printf("{color32}<\u2170r\u217D %s:%d>{reset} {color34}<nickname:%s{color166}*{color34}>{reset} {color228}\u2A20{reset}  ", client->host, client->port, client->pseudo);
+	{
+		ft_printf("{color32}<\u2170r\u217D %s:%d>{reset} {color34}",\
+			client->host, client->port);
+		ft_printf("<nickname:%s{color166}*{color34}>{reset} ",\
+			client->pseudo);
+		ft_printf("{color228}\u2A20{reset}  ");
+	}
 	else if (client->host == NULL || client->pseudo == NULL)
 		ft_printf("{color32}<\u2170r\u217D>{reset} {color228}\u2A20{reset} ");
 	if (client->current_cmd->cmd != NULL)

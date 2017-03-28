@@ -32,48 +32,6 @@ void		nickname_action(t_socket_client *client, char type, char *nick)
 	}
 }
 
-void		channel_action(t_socket_client *client, char type, char *message)
-{
-	if (message == NULL)
-		return ;
-	if (type == 'A')
-	{
-		new_channel(client, message);
-	}
-	else if (type == 'O')
-	{
-		client->channel = new_channel(client, message);
-	}
-	else if (type == 'J')
-	{
-		ft_printf("%s has joined the channel\n", message);
-	}
-	else if (type == 'E')
-	{
-		ft_printf("{red}Votre pseudonyme %s doit avoir une longueur", message);
-		ft_printf(" maximum de 9 characters{reset}\n");
-	}
-	else if (type == 'N')
-	{
-		char **split;
-
-		split = ft_split_string(message, "|");
-		ft_printf("%s change nickname to %s\n", split[0], split[1]);
-	}
-	else if (type == 'M' && client->channel != NULL)
-	{
-		char **split;
-
-		split = ft_split_string(message, "|");
-		split[1] = ft_replace(split[1], ":)", "\u263B");
-		split[1] = ft_replace(split[1], ":(", "\u263A");
-		split[1] = ft_replace(split[1], ":vrai", "\u2713");
-		split[1] = ft_replace(split[1], ":faux", "\u2717");
-		split[1] = ft_replace(split[1], ":star", "\u272D");
-		ft_printf("%s: %s\n", split[0], split[1]);
-	}
-}
-
 void		data_processor(t_socket_client *client, char *message)
 {
 	char	action;
