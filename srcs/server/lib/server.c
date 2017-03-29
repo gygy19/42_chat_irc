@@ -86,7 +86,7 @@ int			socket_initialize(t_socket_server *server)
 		return (0);
 	ft_memset(&server->serv_addr, '0', sizeof(struct sockaddr_in));
 	server->serv_addr.sin_family = PROT_INTERNET_IPV4;
-	server->serv_addr.sin_addr.s_addr = inet_addr("10.11.11.6");
+	server->serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	server->serv_addr.sin_port = htons(server->port);
 	if (bind(server->listenfd, (struct sockaddr*)&server->serv_addr,\
 		sizeof(server->serv_addr)) < 0)

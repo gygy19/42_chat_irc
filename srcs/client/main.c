@@ -22,11 +22,11 @@ t_socket_client	*load_struct_socket_client(void)
 	client->server = NULL;
 	client->host = NULL;
 	client->port = 0;
-	client->pseudo = NULL;
+	client->nickname = NULL;
 	client->channel = NULL;
 	client->channels = NULL;
 	client->send = send_message;
-	client->current_cmd = new_cmds(client);
+	client->current_cmd = new_command(client);
 	client->message = NULL;
 	client->serialize = ft_sprintf;
 	i = -1;
@@ -46,7 +46,7 @@ int				main(int argc, char **argv)
 	client->events[0].read = read_keys;
 	client->events[1].fd = 0;
 	client->events[1].read = read_keys;
-	load_console();
+	load_termios_console();
 	print_prompt(client);
 	client_handler(client);
 	return (0);

@@ -17,25 +17,11 @@ void		authentificate_message(t_socket_client *client)
 	client->send(client, client->serialize("WB"));
 }
 
-void		nickname_action(t_socket_client *client, char type, char *nick)
-{
-	if (nick == NULL)
-		return ;
-	if (type == 'C')
-	{
-		client->pseudo = nick;
-	}
-	else if (type == 'L')
-	{
-		ft_printf("Votre pseudonyme %s doit avoir une longueur ", nick);
-		ft_printf("comprise entre 2 et 10 characters\n");
-	}
-}
-
 void		data_processor(t_socket_client *client, char *message)
 {
 	char	action;
 	char	type;
+	char	*sub;
 
 	action = '\0';
 	type = '\0';
@@ -43,14 +29,17 @@ void		data_processor(t_socket_client *client, char *message)
 		action = message[0];
 	if (ft_strlen(message) > 1)
 		type = message[1];
+	sub = ft_strsub(message, 2, ft_strlen(message));
 	if (action == 'C')
-		channel_action(client, type,\
-			ft_strsub(message, 2, ft_strlen(message)));
+		channel_action(client, type, sub);
+	else if (action == 'M')
+		mp_action(client, type, sub);
 	else if (action == 'N')
-		nickname_action(client, type,\
-			ft_strsub(message, 2, ft_strlen(message)));
+		nickname_action(client, type, sub);
 	else if (action == 'W' && type == 'M')
 		authentificate_message(client);
 	ft_putstr("\n\033[s");
 	reprint_line(client);
+	if (sub != NULL)
+		ft_strdel(&sub);
 }

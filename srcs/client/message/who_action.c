@@ -1,30 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   load_caps.c                                        :+:      :+:    :+:   */
+/*   who_action.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/17 08:15:02 by jguyet            #+#    #+#             */
-/*   Updated: 2017/03/17 08:15:04 by jguyet           ###   ########.fr       */
+/*   Created: 2017/03/28 20:14:52 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/28 20:15:42 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_client.h"
-#include <term.h>
 
-int		load_console(void)
+int			who_action(t_socket_client *client, char *message)
 {
-	struct termios	*term;
+	size_t	i;
+	char	**split;
 
-	term = (struct termios *)malloc(sizeof(struct termios));
-	if (tcgetattr(0, term) == -1)
+	if (client->channel == NULL)
+		return (1);
+	if (!(split = ft_split_string(message, "|")))
+		return (0);
+	if (array_length(split) < 1)
 	{
-		printf("[modif_term] Failed request tcgetattr!\n");
+		free_array(split);
 		return (0);
 	}
-	term->c_lflag &= ~(ICANON | ECHO);
-	if (tcsetattr(0, TCSADRAIN, term) == -1)
-		return (0);
-	return (1);
+	i = 1;
+	while (i < array_length(split))
+	{
+		ft_printf("%s\n", split[i]);
+		i++;
+	}
+	ft_printf("%d user(s) online on channel (%s)\n",\
+		ft_atoi(split[0]), client->channel->name);
+	free_array(split);
+	return (0);
 }

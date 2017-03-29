@@ -37,28 +37,46 @@ static int	is_valide_ip(char *ip)
 	return (1);
 }
 
-int			check_connect_cmd(t_socket_client *client, char *cmd)
+static int	check_array_len(char **split, char *final_cmd)
 {
-	char	**split;
-
-	if (ft_strncmp(cmd, "/connect", 8) != 0)
-		return (0);
-	split = ft_split_string(cmd, " ");
 	if (array_length(split) != 3)
 	{
 		ft_printf("/connect <machine> [port]\n");
-		open_socket_connection(client, "127.0.0.1", 5000);
+		ft_strdel(&final_cmd);
 		free_array(split);
 		return (0);
 	}
+	return (1);
+}
+
+static int	check_valide_ip(char **split, char *final_cmd)
+{
 	if (!is_valide_ip(split[1]))
 	{
 		ft_printf("Error not comform ip\n");
+		ft_strdel(&final_cmd);
 		free_array(split);
 		return (0);
 	}
+	return (1);
+}
+
+int			check_connect_cmd(t_socket_client *client, char *cmd)
+{
+	char	**split;
+	char	*final_cmd;
+
+	if (ft_strncmp(cmd, "/connect", 8) != 0)
+		return (0);
+	final_cmd = ft_replace(ft_strdup(cmd), ":", " ");
+	split = ft_split_string(final_cmd, " ");
+	if (!check_array_len(split, final_cmd))
+		return (1);
+	if (!check_valide_ip(split, final_cmd))
+		return (1);
 	if (!open_socket_connection(client, split[1], ft_atoi(split[2])))
 		ft_printf("Error during connection\n");
+	ft_strdel(&final_cmd);
 	free_array(split);
 	return (1);
 }

@@ -14,13 +14,18 @@
 
 int		check_who_cmd(t_socket_client *client, char *cmd)
 {
-	char	**split;
-
-	if (ft_strncmp(cmd, "/who", 6) != 0)
+	if (ft_strcmp(cmd, "/who") != 0)
 		return (0);
-	split = ft_split_string(cmd, " ");
-	if (array_length(split) != 1)
+	if (client->channel == NULL)
+	{
+		ft_printf("You is not on a channel\n");
 		return (0);
-	(void)client;
+	}
+	if (client->host == NULL)
+	{
+		ft_printf("Yo is not not connected on server\n");
+		return (0);
+	}
+	client->send(client, client->serialize("CW"));
 	return (1);
 }

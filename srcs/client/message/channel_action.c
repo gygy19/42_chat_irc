@@ -14,16 +14,27 @@
 
 static void	print_new_message(t_socket_client *client, char *message)
 {
-	char **split;
+	char	**split;
+	char	*m;
+	char	*nickname;
 
 	(void)client;
 	split = ft_split_string(message, "|");
-	split[1] = ft_replace(split[1], ":)", ":D");
-	split[1] = ft_replace(split[1], ":vrai", "\u2713");
-	split[1] = ft_replace(split[1], ":faux", "\u2717");
-	split[1] = ft_replace(split[1], ":star", "\u272D");
-	ft_printf("%s: %s\n", split[0], split[1]);
+	if (array_length(split) < 1\
+		|| (ft_strlen(message) == ft_strlen(split[0]) + 1))
+	{
+		free_array(split);
+		return ;
+	}
+	nickname = split[0];
+	m = ft_strdup(message + ft_strlen(nickname) + 1);
+	m = ft_replace(m, ":)", ":D");
+	m = ft_replace(m, ":vrai", "\u2713");
+	m = ft_replace(m, ":faux", "\u2717");
+	m = ft_replace(m, ":star", "\u272D");
+	ft_printf("%s: %s{reset}\n", nickname, m);
 	free_array(split);
+	ft_strdel(&m);
 }
 
 static void	change_nickname(t_socket_client *client, char *message)
@@ -36,12 +47,23 @@ static void	change_nickname(t_socket_client *client, char *message)
 	free_array(split);
 }
 
+static void	leave_channel(t_socket_client *client, char *message)
+{
+	if (client->channel == NULL)
+		return ;
+	if (ft_strcmp(message, client->nickname) == 0)
+		client->channel = NULL;
+	ft_printf("%s has left the channel\n", message);
+}
+
 void		channel_action(t_socket_client *client, char type, char *message)
 {
 	if (message == NULL)
 		return ;
 	if (type == 'A')
 		new_channel(client, message);
+	else if (type == 'L')
+		leave_channel(client, message);
 	else if (type == 'O')
 		client->channel = new_channel(client, message);
 	else if (type == 'J')
@@ -55,4 +77,6 @@ void		channel_action(t_socket_client *client, char type, char *message)
 		change_nickname(client, message);
 	else if (type == 'M' && client->channel != NULL)
 		print_new_message(client, message);
+	else if (type == 'W')
+		who_action(client, message);
 }

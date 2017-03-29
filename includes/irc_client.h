@@ -73,7 +73,7 @@ typedef struct			s_socket_client
 	char				*host;
 	int					port;
 	int					sockfd;
-	char				*pseudo;
+	char				*nickname;
 	struct sockaddr_in	serv_addr;
 	struct hostent		*server;
 	struct s_events		events[2];
@@ -95,15 +95,39 @@ int						aks_initialize_connection(t_socket_client *client);
 int						send_message(t_socket_client *client, char *message);
 void					received_message(t_socket_client *client);
 int						client_handler(t_socket_client *client);
+void					server_disconnect(t_socket_client *client);
 
 /*
 ** Prog client
 */
-int						load_console(void);
-void					restart_line(void);
+int						load_termios_console(void);
 void					data_processor(t_socket_client *client, char *message);
-void					switch_cmds(t_socket_client *client, char *cmd);
+
+/*
+** Prompt command
+*/
 void					read_keys(t_socket_client *client);
+t_cmds					*new_command(t_socket_client *client);
+void					switch_command(t_socket_client *client, char *cmd);
+
+/*
+** cursor_nav
+*/
+void					move_cursor_to_keycode_dir(t_socket_client *client, int key, char *keys);
+void					del_one_entry(t_socket_client *client);
+void					escape_line(t_socket_client *client);
+
+/*
+** history
+*/
+void					up_to_next_olded_command(t_socket_client *client);
+void					down_to_olded_next_command(t_socket_client *client);
+void					use_history_command(t_socket_client *client);
+
+/*
+** prompt
+*/
+void					restart_line(void);
 void					reprint_line(t_socket_client *client);
 void					print_prompt(t_socket_client *client);
 
@@ -123,14 +147,19 @@ int						check_message_cmd(t_socket_client *client, char *cmd);
 ** MESSAGES
 */
 void					channel_action(t_socket_client *client, char type, char *message);
+int						who_action(t_socket_client *client, char *message);
+void					mp_action(t_socket_client *client, char type, char *message);
+void					nickname_action(t_socket_client *client, char type, char *nick);
 
 /*
-** Channels
+** Channel
 */
 t_channel				*next_channel(t_channel *current);
 t_channel				*new_channel(t_socket_client *client, char *infos);
+t_channel				*exists_channel(t_socket_client *client, char *name);
 void					remove_channel(t_socket_client * client, int channelid);
 void					print_channels(t_socket_client *client);
+void					clean_channels(t_socket_client *client);
 
 /*
 ** Window

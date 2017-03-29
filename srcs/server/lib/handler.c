@@ -55,9 +55,13 @@ static void	set_socket_server_fd(t_socket_server *server,\
 
 static void	check_socket_accept(t_socket_server *server, fd_set *rdfs)
 {
+	socklen_t			len;
+	struct sockaddr_in	saddr;
+
+	len = sizeof(saddr);
 	if (FD_ISSET(server->listenfd, rdfs))
 		server->socket_accept(server,\
-			accept(server->listenfd, (struct sockaddr*)NULL, NULL));
+			accept(server->listenfd, (struct sockaddr*)&saddr, &len), &saddr);
 }
 
 int			socket_handler(t_socket_server *server)

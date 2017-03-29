@@ -61,6 +61,7 @@ typedef struct			s_client
 	char				*message;
 	char				*nickname;
 	struct s_channel	*channel;
+	struct sockaddr_in	in;
 }						t_client;
 
 typedef struct			s_socket_server
@@ -87,7 +88,8 @@ int						data_processor(t_socket_server *server,\
 ** Socket_server
 */
 int						socket_initialize(t_socket_server *server);
-t_client				*socket_accept(t_socket_server *server, int fd);
+t_client				*socket_accept(t_socket_server *server, int fd,\
+						struct sockaddr_in *addr);
 t_client				*socket_disconnect(t_socket_server *server, t_client *client);
 int						socket_handler(t_socket_server *server);
 int						send_message_to_all(t_socket_server *server, char *message);
@@ -102,13 +104,36 @@ int						send_message(t_client *client, char *message);
 int						received_message(t_socket_server *server, t_client *client);
 
 /*
+** Messages
+*/
+int						channel_action(t_socket_server *server, t_client *client,\
+						char type, char *message);
+int						who_action(t_socket_server *server, t_client *client);
+int						mp_action(t_socket_server *server, t_client *client,\
+						char *message);
+int						nickname_action(t_socket_server *server, t_client *client,\
+						char type, char *nick);
+
+/*
 ** Channels
 */
-t_channel				*get_channel(t_socket_server *server, char *name);
 int						add_client_to_channel(t_channel *channel, t_client *client);
 void					load_channels(t_socket_server *server);
 t_channel				*next_channel(t_channel *current);
 t_channel				*add_channel(t_socket_server *server, int id, char *name);
 void					remove_channel(t_socket_server *server, int channelid);
+t_channel				*get_channel(t_socket_server *server, char *name);
+char					*get_channel_users(t_socket_server *server, t_channel *channel);
+/*
+** channel sending
+*/
+void					send_to_channel_users(t_socket_server *server,\
+						t_channel *channel, char *data);
+void					left_channel(t_socket_server *server,\
+						t_channel *channel, t_client *client);
+void					add_message(t_socket_server *server,\
+						t_channel *channel, t_client *client, char *message);
+void					join_channel(t_socket_server *server,\
+						t_channel *channel, t_client *client);
 
 #endif

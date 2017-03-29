@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   channels.c                                         :+:      :+:    :+:   */
+/*   channel.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/19 03:24:19 by jguyet            #+#    #+#             */
-/*   Updated: 2017/03/19 03:24:20 by jguyet           ###   ########.fr       */
+/*   Created: 2017/03/29 05:10:23 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/29 05:10:27 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,52 +33,20 @@ t_channel			*exists_channel(t_socket_client *client, char *name)
 	return (NULL);
 }
 
-static t_channel	*generate_new_channel(t_socket_client *client, char **split)
+void				clean_channels(t_socket_client *client)
 {
 	t_channel	*channel;
 	t_channel	*tmp;
 
-	if (!(channel = malloc(sizeof(t_channel))))
-		return (NULL);
-	channel->id = ft_atoi(split[0]);
-	channel->name = ft_strdup(split[1]);
-	channel->users = NULL;
-	channel->next = next_channel;
-	channel->right = NULL;
-	channel->left = NULL;
-	if (client->channels == NULL)
-		client->channels = channel;
-	else
+	channel = client->channels;
+	while (channel)
 	{
-		tmp = client->channels;
-		while (tmp->right != NULL)
-			tmp = tmp->next(tmp);
-		tmp->right = channel;
-		channel->left = tmp;
+		tmp = channel->next(channel);
+		ft_strdel(&channel->name);
+		free(channel);
+		channel = tmp;
 	}
-	return (channel);
-}
-
-t_channel			*new_channel(t_socket_client *client, char *infos)
-{
-	t_channel	*channel;
-	char		**split;
-
-	if (!(split = ft_split_string(infos, "|")))
-		return (NULL);
-	if (array_length(split) != 2)
-	{
-		free_array(split);
-		return (NULL);
-	}
-	if ((channel = exists_channel(client, split[1])) != NULL)
-	{
-		free_array(split);
-		return (channel);
-	}
-	channel = generate_new_channel(client, split);
-	free_array(split);
-	return (channel);
+	client->channels = NULL;
 }
 
 void				remove_channel(t_socket_client *client, int channelid)

@@ -29,5 +29,8 @@ int		open_socket_connection(t_socket_client *client,\
 	if (client->host != NULL)
 		ft_strdel(&client->host);
 	client->host = NULL;
+	client->events[1].fd = 0;
+	client->events[1].read = read_keys;
+	clean_channels(client);
 	return (0);
 }

@@ -28,6 +28,8 @@ char		*ft_replace(char *str, char *old, char *new)
 	int	len;
 	int	i;
 
+	if (ft_strlen(new) == 0)
+		return (str);
 	len = ft_strlen(old);
 	i = 0;
 	while (str[i])
@@ -36,6 +38,7 @@ char		*ft_replace(char *str, char *old, char *new)
 		{
 			str = local_rp(str, i, old, new);
 			i += ft_strlen(new);
+			continue ;
 		}
 		i++;
 	}

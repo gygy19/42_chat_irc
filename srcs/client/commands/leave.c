@@ -14,16 +14,18 @@
 
 int		check_leave_cmd(t_socket_client *client, char *cmd)
 {
-	char	**split;
-
-	if (ft_strncmp(cmd, "/leave", 6) != 0)
+	if (ft_strcmp(cmd, "/leave") != 0)
 		return (0);
-	split = ft_split_string(cmd, " ");
-	if (array_length(split) != 2)
+	if (client->channel == NULL)
 	{
-		ft_printf("Channel doesn't exist\n");
+		ft_printf("You is not on a channel\n");
 		return (0);
 	}
-	(void)client;
+	if (client->host == NULL)
+	{
+		ft_printf("Yo is not not connected on server\n");
+		return (0);
+	}
+	client->send(client, client->serialize("CL"));
 	return (1);
 }

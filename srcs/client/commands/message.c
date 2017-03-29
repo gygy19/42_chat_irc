@@ -18,6 +18,8 @@ int		check_message_cmd(t_socket_client *client, char *cmd)
 		return (0);
 	if (client->host == NULL)
 		return (0);
+	if (client->channel == NULL)
+		return (0);
 	client->send(client, client->serialize("CM%s", ft_strdup(cmd)));
 	return (1);
 }

@@ -1,32 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   join.c                                             :+:      :+:    :+:   */
+/*   termios.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/18 19:09:37 by jguyet            #+#    #+#             */
-/*   Updated: 2017/03/18 19:09:40 by jguyet           ###   ########.fr       */
+/*   Created: 2017/03/29 05:41:48 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/29 05:41:50 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_client.h"
+#include <term.h>
 
-int		check_join_cmd(t_socket_client *client, char *cmd)
+int		load_termios_console(void)
 {
-	char	**split;
+	struct termios	*term;
 
-	if (ft_strncmp(cmd, "/join", 5) != 0)
-		return (0);
-	if (!(split = ft_split_string(cmd, " ")))
-		return (0);
-	if (array_length(split) != 2 || client->host == NULL)
+	term = (struct termios *)malloc(sizeof(struct termios));
+	if (tcgetattr(0, term) == -1)
 	{
-		ft_printf("Channel doesn't exist\n");
-		free_array(split);
+		printf("[modif_term] Failed request tcgetattr!\n");
 		return (0);
 	}
-	client->send(client, client->serialize("CJ%s", split[1]));
-	free_array(split);
+	term->c_lflag &= ~(ICANON | ECHO);
+	if (tcsetattr(0, TCSADRAIN, term) == -1)
+		return (0);
 	return (1);
 }

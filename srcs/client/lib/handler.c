@@ -61,9 +61,12 @@ int			send_message(t_socket_client *client, char *message)
 
 void		server_disconnect(t_socket_client *client)
 {
+	if (client->host != NULL)
+		ft_strdel(&client->host);
 	client->host = NULL;
 	client->events[1].fd = 0;
 	client->events[1].read = read_keys;
+	clean_channels(client);
 	reprint_line(client);
 }
 
@@ -74,10 +77,7 @@ static void	read_new_message(t_socket_client *client)
 
 	ret = recv(client->sockfd, buffer, 1, 0);
 	buffer[ret] = '\0';
-	if (client->message == NULL)
-		client->message = ft_strdup(buffer);
-	else
-		client->message = ft_dstrjoin(client->message, buffer, 1);
+	client->message = ft_dstrjoin(client->message, buffer, 1);
 	if (ft_strlen(client->message) == 0)
 	{
 		server_disconnect(client);

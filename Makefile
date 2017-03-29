@@ -39,12 +39,19 @@ INCDIRLIBFT	=	$(LIBFTDIR)/includes/
 SRCSERVER	=	\
 				srcs/server/main.c											\
 				srcs/server/data_processor.c								\
-				srcs/server/channels.c										\
+				srcs/server/channel/channel.c								\
+				srcs/server/channel/functions_getting_channel.c				\
+				srcs/server/channel/functions_to_send_on_channel.c			\
 				srcs/server/lib/server.c									\
 				srcs/server/lib/handler.c									\
-				srcs/server/lib/client.c									\
 				srcs/server/lib/socket_accept.c								\
 				srcs/server/lib/sig.c										\
+				srcs/server/client/client.c									\
+				srcs/server/client/client_aks.c								\
+				srcs/server/message/nick_action.c							\
+				srcs/server/message/who_action.c							\
+				srcs/server/message/mp_action.c								\
+				srcs/server/message/channel_action.c						\
 				srcs/xor/xor.c												\
 				srcs/server/lib/socket_disconnect.c
 
@@ -55,10 +62,14 @@ OBJSSERVER	=	$(addprefix $(OBJDIR), $(SRCSERVER:.c=.o))
 SRCCLIENT	=	\
 				srcs/client/main.c											\
 				srcs/client/data_processor.c								\
-				srcs/client/load_caps.c										\
-				srcs/client/process_cmds.c									\
-				srcs/client/channels.c										\
-				srcs/client/prompt.c										\
+				srcs/client/prompt/command_processor.c						\
+				srcs/client/prompt/command_history.c						\
+				srcs/client/prompt/command_switcher.c						\
+				srcs/client/prompt/prompt_putting.c							\
+				srcs/client/prompt/prompt_putting_channels.c				\
+				srcs/client/prompt/cursor_navigation.c						\
+				srcs/client/channel/channel.c								\
+				srcs/client/channel/new_channel.c							\
 				srcs/client/commands/nick.c									\
 				srcs/client/commands/join.c									\
 				srcs/client/commands/leave.c								\
@@ -69,7 +80,11 @@ SRCCLIENT	=	\
 				srcs/client/lib/handler.c									\
 				srcs/client/lib/socket.c									\
 				srcs/client/message/channel_action.c						\
+				srcs/client/message/who_action.c							\
+				srcs/client/message/mp_action.c								\
+				srcs/client/message/nick_action.c							\
 				srcs/client/window/size.c									\
+				srcs/client/window/termios.c								\
 				srcs/xor/xor.c												\
 				srcs/client/lib/socket_session.c
 
