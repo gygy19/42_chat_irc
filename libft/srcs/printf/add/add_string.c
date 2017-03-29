@@ -14,14 +14,10 @@
 
 #include "printf.h"
 
-void		add_string(t_string *string, char *s, int del)
+static void	check_if_buffer_is_empty(t_string *string, size_t o)
 {
-	unsigned int	i;
-	unsigned int	o;
 	char			*tmp;
 
-	i = 0;
-	o = ft_strlen(s);
 	if (string->size - string->res < o && o < BUFFER)
 	{
 		tmp = ft_strnew(string->res + BUFFER);
@@ -38,6 +34,16 @@ void		add_string(t_string *string, char *s, int del)
 		string->new = tmp;
 		string->size = string->res + o + BUFFER;
 	}
+}
+
+void		add_string(t_string *string, char *s, int del)
+{
+	unsigned int	i;
+	unsigned int	o;
+
+	i = 0;
+	o = ft_strlen(s);
+	check_if_buffer_is_empty(string, o);
 	while (i < o)
 		string->new[string->res++] = s[i++];
 	if (del == 2 || del == 3)

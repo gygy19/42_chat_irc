@@ -95,6 +95,7 @@ typedef struct			s_string
 #  define BOL  "\e[1m"
 #  define BONUS 1
 
+void					load_ptr_function(t_string *string);
 /*
 **	HANDLER
 */

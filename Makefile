@@ -53,6 +53,7 @@ SRCSERVER	=	\
 				srcs/server/message/mp_action.c								\
 				srcs/server/message/channel_action.c						\
 				srcs/xor/xor.c												\
+				srcs/xor/hexa_xor.c											\
 				srcs/server/lib/socket_disconnect.c
 
 SRCSSERVER	=	$(addprefix $(SRCDIR), $(SRCSERVER))
@@ -86,6 +87,7 @@ SRCCLIENT	=	\
 				srcs/client/window/size.c									\
 				srcs/client/window/termios.c								\
 				srcs/xor/xor.c												\
+				srcs/xor/hexa_xor.c											\
 				srcs/client/lib/socket_session.c
 
 SRCSCLIENT	=	$(addprefix $(SRCDIR), $(SRCCLIENT))

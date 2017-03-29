@@ -18,6 +18,9 @@
 #  include <printf.h>
 #  include <libft.h>
 
+char		*int_to_hexastring(char c);
+char		hexastring_to_int(char *s);
+
 # endif
 
 # define XOR_KEY "JGUYET"

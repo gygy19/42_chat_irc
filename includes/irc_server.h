@@ -13,15 +13,15 @@
 #ifndef IRC_SERVER_H
 # define IRC_SERVER_H
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <libft.h>
-#include <printf.h>
-#include <mapft.h>
-#include <unistd.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <stdio.h>
+# include <fcntl.h>
+# include <libft.h>
+# include <printf.h>
+# include <mapft.h>
+# include <unistd.h>
 
 # define EPROTONOSUPPORT 93
 # define EAFNOSUPPORT    97
@@ -90,9 +90,11 @@ int						data_processor(t_socket_server *server,\
 int						socket_initialize(t_socket_server *server);
 t_client				*socket_accept(t_socket_server *server, int fd,\
 						struct sockaddr_in *addr);
-t_client				*socket_disconnect(t_socket_server *server, t_client *client);
+t_client				*socket_disconnect(t_socket_server *server,\
+						t_client *client);
 int						socket_handler(t_socket_server *server);
-int						send_message_to_all(t_socket_server *server, char *message);
+int						send_message_to_all(t_socket_server *server,\
+						char *message);
 t_socket_server			*singleton_socket_server(int port);
 
 /*
@@ -101,29 +103,33 @@ t_socket_server			*singleton_socket_server(int port);
 t_client				*next_client(t_client *current);
 t_client				*add_new_client(t_socket_server *server, int fd);
 int						send_message(t_client *client, char *message);
-int						received_message(t_socket_server *server, t_client *client);
+int						received_message(t_socket_server *server,\
+						t_client *client);
 
 /*
 ** Messages
 */
-int						channel_action(t_socket_server *server, t_client *client,\
-						char type, char *message);
+int						channel_action(t_socket_server *server,\
+						t_client *client, char type, char *message);
 int						who_action(t_socket_server *server, t_client *client);
 int						mp_action(t_socket_server *server, t_client *client,\
 						char *message);
-int						nickname_action(t_socket_server *server, t_client *client,\
-						char type, char *nick);
+int						nickname_action(t_socket_server *server,\
+						t_client *client, char type, char *nick);
 
 /*
 ** Channels
 */
-int						add_client_to_channel(t_channel *channel, t_client *client);
+int						add_client_to_channel(t_channel *channel,\
+						t_client *client);
 void					load_channels(t_socket_server *server);
 t_channel				*next_channel(t_channel *current);
-t_channel				*add_channel(t_socket_server *server, int id, char *name);
+t_channel				*add_channel(t_socket_server *server, int id,\
+						char *name);
 void					remove_channel(t_socket_server *server, int channelid);
 t_channel				*get_channel(t_socket_server *server, char *name);
-char					*get_channel_users(t_socket_server *server, t_channel *channel);
+char					*get_channel_users(t_socket_server *server,\
+						t_channel *channel);
 /*
 ** channel sending
 */

@@ -13,17 +13,17 @@
 #ifndef IRC_CLIENT_H
 # define IRC_CLIENT_H
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <libft.h>
-#include <printf.h>
-#include <mapft.h>
-#include <unistd.h>
-#include <netdb.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <stdlib.h>
+# include <termios.h>
+# include <stdio.h>
+# include <fcntl.h>
+# include <libft.h>
+# include <printf.h>
+# include <mapft.h>
+# include <unistd.h>
+# include <netdb.h>
 
 # define EPROTONOSUPPORT 93
 # define EAFNOSUPPORT    97
@@ -113,7 +113,8 @@ void					switch_command(t_socket_client *client, char *cmd);
 /*
 ** cursor_nav
 */
-void					move_cursor_to_keycode_dir(t_socket_client *client, int key, char *keys);
+void					move_cursor_to_keycode_dir(t_socket_client *client,\
+						int key, char *keys);
 void					del_one_entry(t_socket_client *client);
 void					escape_line(t_socket_client *client);
 
@@ -146,10 +147,13 @@ int						check_message_cmd(t_socket_client *client, char *cmd);
 /*
 ** MESSAGES
 */
-void					channel_action(t_socket_client *client, char type, char *message);
+void					channel_action(t_socket_client *client, char type,\
+						char *message);
 int						who_action(t_socket_client *client, char *message);
-void					mp_action(t_socket_client *client, char type, char *message);
-void					nickname_action(t_socket_client *client, char type, char *nick);
+void					mp_action(t_socket_client *client, char type,\
+						char *message);
+void					nickname_action(t_socket_client *client, char type,\
+						char *nick);
 
 /*
 ** Channel
@@ -157,7 +161,7 @@ void					nickname_action(t_socket_client *client, char type, char *nick);
 t_channel				*next_channel(t_channel *current);
 t_channel				*new_channel(t_socket_client *client, char *infos);
 t_channel				*exists_channel(t_socket_client *client, char *name);
-void					remove_channel(t_socket_client * client, int channelid);
+void					remove_channel(t_socket_client *client, int channelid);
 void					print_channels(t_socket_client *client);
 void					clean_channels(t_socket_client *client);
 

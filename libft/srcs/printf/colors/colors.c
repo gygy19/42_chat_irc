@@ -34,7 +34,6 @@ static void	add_color_256(t_string *string)
 
 void		modif_colors(t_string *string)
 {
-
 	string->new = ft_replace(string->new, "{red}", RED);
 	string->new = ft_replace(string->new, "{reset}", NRM);
 	string->new = ft_replace(string->new, "{green}", GRN);

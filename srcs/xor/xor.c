@@ -14,23 +14,6 @@
 
 #include "xor.h"
 
-static char	*int_to_hexastring(char c)
-{
-	char	*hex;
-
-	ft_asprintf(&hex, "%02x", c);
-	return (hex);
-}
-
-static char	hexastring_to_int(char *s)
-{
-	char	xor;
-
-	xor = ft_atoi_base(s, 16);
-	ft_strdel(&s);
-	return (xor);
-}
-
 static char	*xor_char(int i, char c)
 {
 	char	*ret;

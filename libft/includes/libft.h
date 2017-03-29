@@ -156,6 +156,7 @@ void				free_array(char **array);
 */
 # define TIME_SEC 500000000
 # define TIME_MILLIS (TIME_SEC / 1000)
+
 void				ft_sleep(int millis);
 
 # define ___N0		STDERR_FILENO, "{bold}{red}ERROR{white} %s:%i:{reset}\t"

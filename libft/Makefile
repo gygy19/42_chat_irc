@@ -151,6 +151,7 @@ SRCBASE		=	\
 				printf/precision/precision_left.c			\
 				printf/handler.c							\
 				printf/ft_printf.c							\
+				printf/load_ptr_conv.c						\
 				printf/get/get_ptr_function.c				\
 				printf/precision/precision_right.c			\
 				printf/precision/base/eight.c				\
