@@ -66,6 +66,7 @@ typedef struct			s_cmds
 	char				*cmd;
 	struct s_cmds		*right;
 	struct s_cmds		*left;
+	size_t				cursor_pos;
 }						t_cmds;
 
 typedef struct			s_socket_client
@@ -131,6 +132,7 @@ void					use_history_command(t_socket_client *client);
 void					restart_line(void);
 void					reprint_line(t_socket_client *client);
 void					print_prompt(t_socket_client *client);
+void					print_current_command(t_socket_client *client, int start);
 
 /*
 ** commands

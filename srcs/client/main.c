@@ -14,7 +14,6 @@
 
 t_socket_client	*load_struct_socket_client(void)
 {
-	int				i;
 	t_socket_client	*client;
 
 	if (!(client = malloc(sizeof(t_socket_client))))
@@ -26,12 +25,10 @@ t_socket_client	*load_struct_socket_client(void)
 	client->channel = NULL;
 	client->channels = NULL;
 	client->send = send_message;
-	client->current_cmd = new_command(client);
 	client->message = NULL;
+	client->cmds = NULL;
 	client->serialize = ft_sprintf;
-	i = -1;
-	while (i++ < 100)
-		client->cmds[i].cmd = NULL;
+	client->current_cmd = new_command(client);
 	return (client);
 }
 

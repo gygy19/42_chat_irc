@@ -12,17 +12,39 @@
 
 #include "irc_client.h"
 
+static void		move_cursor_right(t_socket_client *client)
+{
+	if (client->current_cmd->cursor_pos ==\
+		ft_strlen(client->current_cmd->cmd))
+		return ;
+	client->current_cmd->cursor_pos++;
+	ft_putstr("\033[1C");
+}
+
+static void		move_cursor_left(t_socket_client *client)
+{
+	if (client->current_cmd->cursor_pos == 0)
+		return ;
+	client->current_cmd->cursor_pos--;
+	ft_putstr("\033[1D");
+}
+
 void			move_cursor_to_keycode_dir(t_socket_client *client,\
 	int key, char *keys)
 {
-	if (key == 183 && ft_strlen(keys) == 3)
+	if (key == 183 && ft_strlen(keys) == 3 && client->current_cmd->left)
 		up_to_next_olded_command(client);
-	if (key == 184 && ft_strlen(keys) == 3)
+	if (key == 184 && ft_strlen(keys) == 3 && client->current_cmd->right)
 		down_to_olded_next_command(client);
 	if (key == 185 && ft_strlen(keys) == 3)
-		ft_putstr("\033[1Cright");
+		move_cursor_right(client);
 	if (key == 186 && ft_strlen(keys) == 3)
-		ft_putstr("\033[1Dleft");
+		move_cursor_left(client);
+	if (key == 12 && ft_strlen(keys) == 1)
+	{
+		ft_printf("\033[2J\033[%d;0f\033[s", get_size_y());
+		reprint_line(client);
+	}
 }
 
 void			escape_line(t_socket_client *client)
@@ -48,22 +70,40 @@ void			escape_line(t_socket_client *client)
 	}
 }
 
+static void		del_c(t_socket_client *client)
+{
+	char	*tmp;
+	char	*tmp2;
+
+	tmp = NULL;
+	tmp2 = NULL;
+	if (client->current_cmd->cmd != NULL &&\
+		client->current_cmd->cursor_pos != 0)
+		tmp = ft_strndup(client->current_cmd->cmd,\
+			client->current_cmd->cursor_pos);
+	if (client->current_cmd->cmd != NULL &&\
+		ft_strlen(client->current_cmd->cmd) > client->current_cmd->cursor_pos)
+		tmp2 = ft_strdup(client->current_cmd->cmd +\
+			client->current_cmd->cursor_pos);
+	if (tmp == NULL || ft_strlen(tmp) == 1)
+		tmp = ft_strnew(0);
+	else
+	{
+		tmp = ft_strndup(tmp, ft_strlen(tmp) - 1);
+	}
+	if (tmp2 == NULL)
+		tmp2 = ft_strnew(0);
+	client->current_cmd->cmd = ft_sprintf("%s%s", tmp, tmp2);
+	print_current_command(client, 0);
+	ft_strdel(&tmp);
+	ft_strdel(&tmp2);
+}
+
 void			del_one_entry(t_socket_client *client)
 {
-	char *tmp;
-
 	if (ft_strlen(client->current_cmd->cmd) == 0)
 		return ;
-	if (ft_strlen(client->current_cmd->cmd) == 1)
-	{
-		ft_strdel(&client->current_cmd->cmd);
-		client->current_cmd->cmd = ft_strnew(0);
-		ft_printf("\033[1D\033[K");
-		return ;
-	}
-	tmp = ft_strndup(client->current_cmd->cmd,\
-		ft_strlen(client->current_cmd->cmd) - 1);
-	ft_strdel(&client->current_cmd->cmd);
-	client->current_cmd->cmd = tmp;
+	client->current_cmd->cursor_pos--;
 	ft_printf("\033[1D\033[K");
+	del_c(client);
 }

@@ -14,8 +14,7 @@
 
 void		load_channels(t_socket_server *server)
 {
-	add_channel(server, 1, "test");
-	add_channel(server, 2, "accueil");
+	add_channel(server, 1, "Accueil");
 }
 
 t_channel	*next_channel(t_channel *current)

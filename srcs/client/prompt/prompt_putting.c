@@ -52,5 +52,5 @@ void			reprint_line(t_socket_client *client)
 	else if (client->host == NULL || client->nickname == NULL)
 		ft_printf("{color32}<\u2170r\u217D>{reset} {color228}\u2A20{reset} ");
 	if (client->current_cmd->cmd != NULL)
-		ft_putstr(client->current_cmd->cmd);
+		print_current_command(client, 1);
 }

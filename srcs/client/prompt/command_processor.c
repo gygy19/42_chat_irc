@@ -21,6 +21,7 @@ t_cmds			*new_command(t_socket_client *client)
 	new->cmd = ft_strnew(0);
 	new->right = NULL;
 	new->left = NULL;
+	new->cursor_pos = 0;
 	if (client->cmds == NULL)
 		client->cmds = new;
 	else
@@ -57,10 +58,51 @@ static int		hook_entry_keys_codes(int fd, char **keys)
 	return (key);
 }
 
+void			print_current_command(t_socket_client *client, int start)
+{
+	int end_line;
+
+	end_line = ft_strlen(client->current_cmd->cmd +\
+		client->current_cmd->cursor_pos + 1);
+	if (start && ft_strlen(client->current_cmd->cmd) > 0)
+	{
+		ft_printf("\033[K%s", client->current_cmd->cmd);
+		ft_printf("\033[%dD", end_line - 1);
+	}
+	else if (!start && client->current_cmd->cursor_pos < ft_strlen(client->current_cmd->cmd) - 1)
+	{
+		ft_printf("\033[K%s", client->current_cmd->cmd + client->current_cmd->cursor_pos);
+		if (end_line > 1)
+		ft_printf("\033[%dD", end_line + 1);
+	}
+
+}
+
 static void		add_string_hooked_keys_to_current_command(\
 	t_socket_client *client, char *keys)
 {
-	client->current_cmd->cmd = ft_dstrjoin(client->current_cmd->cmd, keys, 1);
+	char	*tmp;
+	char	*tmp2;
+
+	tmp = NULL;
+	tmp2 = NULL;
+	if (client->current_cmd->cmd != NULL &&\
+		client->current_cmd->cursor_pos != 0)
+		tmp = ft_strndup(client->current_cmd->cmd,\
+			client->current_cmd->cursor_pos);
+	if (client->current_cmd->cmd != NULL &&\
+		ft_strlen(client->current_cmd->cmd) > client->current_cmd->cursor_pos)
+		tmp2 = ft_strdup(client->current_cmd->cmd +\
+			client->current_cmd->cursor_pos);
+	if (tmp == NULL)
+		tmp = ft_strnew(0);
+	if (tmp2 == NULL)
+		tmp2 = ft_strnew(0);
+	client->current_cmd->cmd = ft_sprintf("%s%s%s", tmp, keys, tmp2);
+	client->current_cmd->cursor_pos += ft_strlen(keys);
+	print_current_command(client, 0);
+	ft_strdel(&tmp);
+	ft_strdel(&tmp2);
 }
 
 static void		valide_entry_key_to_current_command(t_socket_client *client,\
@@ -95,6 +137,7 @@ void			read_keys(t_socket_client *client)
 		ft_putstr("\033[u\033[K\033[1A\033[K");
 		escape_line(client);
 		switch_command(client, client->current_cmd->cmd);
+		client->current_cmd->cursor_pos = 0;
 		client->current_cmd = new_command(client);
 		ft_putstr("\n\033[s");
 		reprint_line(client);
