@@ -55,7 +55,7 @@ void			escape_line(t_socket_client *client)
 	cmd_len = 0;
 	cmd_len += ft_strlen(client->current_cmd->cmd);
 	if (client->host)
-		cmd_len += ft_strlen(client->host);
+		cmd_len += ft_strlen(client->host) + 2 + ft_nbrlen(client->port);
 	if (client->nickname)
 		cmd_len += ft_strlen(client->nickname);
 	if (client->host != NULL && client->nickname != NULL)
@@ -68,42 +68,4 @@ void			escape_line(t_socket_client *client)
 		while (lines-- > 0)
 			ft_printf("\033[1A\033[K");
 	}
-}
-
-static void		del_c(t_socket_client *client)
-{
-	char	*tmp;
-	char	*tmp2;
-
-	tmp = NULL;
-	tmp2 = NULL;
-	if (client->current_cmd->cmd != NULL &&\
-		client->current_cmd->cursor_pos != 0)
-		tmp = ft_strndup(client->current_cmd->cmd,\
-			client->current_cmd->cursor_pos);
-	if (client->current_cmd->cmd != NULL &&\
-		ft_strlen(client->current_cmd->cmd) > client->current_cmd->cursor_pos)
-		tmp2 = ft_strdup(client->current_cmd->cmd +\
-			client->current_cmd->cursor_pos);
-	if (tmp == NULL || ft_strlen(tmp) == 1)
-		tmp = ft_strnew(0);
-	else
-	{
-		tmp = ft_strndup(tmp, ft_strlen(tmp) - 1);
-	}
-	if (tmp2 == NULL)
-		tmp2 = ft_strnew(0);
-	client->current_cmd->cmd = ft_sprintf("%s%s", tmp, tmp2);
-	print_current_command(client, 0);
-	ft_strdel(&tmp);
-	ft_strdel(&tmp2);
-}
-
-void			del_one_entry(t_socket_client *client)
-{
-	if (ft_strlen(client->current_cmd->cmd) == 0)
-		return ;
-	client->current_cmd->cursor_pos--;
-	ft_printf("\033[1D\033[K");
-	del_c(client);
 }

@@ -13,6 +13,21 @@
 #include "irc_server.h"
 #include "xor.h"
 
+static void	print_action(char *message, char *s)
+{
+	char	action;
+	char	type;
+
+	action = ' ';
+	type = ' ';
+	if (ft_strlen(message) > 0 && message[0] != '\0')
+		action = message[0];
+	if (ft_strlen(message) > 1 && message[1] != '\0')
+		type = message[1];
+	ft_printf("{blue}%s%s: Action[%c] Type[%c]{reset}\n",\
+		s, " Message             ", action, type);
+}
+
 int			send_message(t_client *client, char *message)
 {
 	int		r;
@@ -30,8 +45,7 @@ int			send_message(t_client *client, char *message)
 		client->nickname, inet_ntoa(client->in.sin_addr),\
 		ntohs(client->in.sin_port));
 		ft_printf("{yellow}Send crypted message     : %s{reset}\n", print);
-		ft_printf("{blue}%s: Action[%c] Type[%c]{reset}\n", \
-			"Send Message             ", message[0], message[1]);
+		print_action(message, "Send");
 		r = send(client->fd, crypted, ft_strlen(crypted), 0);
 	}
 	ft_strdel(&message);
@@ -72,8 +86,7 @@ int			received_message(t_socket_server *server, t_client *client)
 			client->nickname, inet_ntoa(client->in.sin_addr),\
 			ntohs(client->in.sin_port));
 		ft_printf("{yellow}Received crypted message : %s{reset}\n", print);
-		ft_printf("{blue}%s: Action[%c] Type[%c]{reset}\n",\
-			"Received Message         ", uncrypted[0], uncrypted[1]);
+		print_action(uncrypted, "Received");
 		server->data_processor(server, client, uncrypted);
 	}
 	ft_strdel(&print);

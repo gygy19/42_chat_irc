@@ -58,26 +58,6 @@ static int		hook_entry_keys_codes(int fd, char **keys)
 	return (key);
 }
 
-void			print_current_command(t_socket_client *client, int start)
-{
-	int end_line;
-
-	end_line = ft_strlen(client->current_cmd->cmd +\
-		client->current_cmd->cursor_pos + 1);
-	if (start && ft_strlen(client->current_cmd->cmd) > 0)
-	{
-		ft_printf("\033[K%s", client->current_cmd->cmd);
-		ft_printf("\033[%dD", end_line - 1);
-	}
-	else if (!start && client->current_cmd->cursor_pos < ft_strlen(client->current_cmd->cmd) - 1)
-	{
-		ft_printf("\033[K%s", client->current_cmd->cmd + client->current_cmd->cursor_pos);
-		if (end_line > 1)
-		ft_printf("\033[%dD", end_line + 1);
-	}
-
-}
-
 static void		add_string_hooked_keys_to_current_command(\
 	t_socket_client *client, char *keys)
 {
@@ -127,11 +107,11 @@ void			read_keys(t_socket_client *client)
 	keys = ft_strnew(0);
 	key = hook_entry_keys_codes(client->events[0].fd, &keys);
 	if (ft_is_string_printable(keys) || key == 127)
-	{
 		valide_entry_key_to_current_command(client, keys, key);
-	}
 	else if (key == '\n' && client->current_cmd->cmd != NULL)
 	{
+		if (ft_strlen(client->current_cmd->cmd) == 0)
+			return ;
 		if (client->current_cmd->right != NULL)
 			use_history_command(client);
 		ft_putstr("\033[u\033[K\033[1A\033[K");
@@ -143,8 +123,6 @@ void			read_keys(t_socket_client *client)
 		reprint_line(client);
 	}
 	else
-	{
 		move_cursor_to_keycode_dir(client, key, keys);
-	}
 	ft_strdel(&keys);
 }

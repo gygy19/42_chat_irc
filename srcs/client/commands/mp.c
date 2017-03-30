@@ -45,7 +45,7 @@ int			check_mp_cmd(t_socket_client *client, char *cmd)
 	if (!check_len_mp_cmd(split))
 		return (1);
 	if (!check_you_private_message(client, split))
-		return (0);
+		return (1);
 	if (ft_strlen(cmd) == (ft_strlen(split[0]) + ft_strlen(split[1]) + 2))
 	{
 		free_array(split);

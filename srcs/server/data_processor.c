@@ -49,7 +49,6 @@ int			data_processor(t_socket_server *server, t_client *client,\
 		return (mp_action(server, client, finalmessage));
 	if (action == 'W' && type == 'B')
 		return (autentificate_client(server, client));
-	ft_strdel(&message);
 	if (finalmessage != NULL)
 		ft_strdel(&finalmessage);
 	return (0);

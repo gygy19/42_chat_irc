@@ -62,7 +62,12 @@ int			send_message(t_socket_client *client, char *message)
 void		server_disconnect(t_socket_client *client)
 {
 	if (client->host != NULL)
+	{
+		ft_printf("Server disconnection %s:%d\n", client->host, client->port);
 		ft_strdel(&client->host);
+	}
+	else
+		ft_printf("Server disconnection\n");
 	client->host = NULL;
 	client->events[1].fd = 0;
 	client->events[1].read = read_keys;

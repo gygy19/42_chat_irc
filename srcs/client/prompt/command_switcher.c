@@ -26,6 +26,14 @@ void			switch_command(t_socket_client *client, char *cmd)
 		return ;
 	if (check_join_cmd(client, cmd))
 		return ;
+	if (check_help_cmd(client, cmd))
+		return ;
+	if (check_history_cmd(client, cmd))
+		return ;
+	if (check_send_cmd(client, cmd))
+		return ;
+	if (check_disconnect_cmd(client, cmd))
+		return ;
 	if (check_message_cmd(client, cmd))
 		return ;
 }

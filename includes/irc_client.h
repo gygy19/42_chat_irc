@@ -132,7 +132,8 @@ void					use_history_command(t_socket_client *client);
 void					restart_line(void);
 void					reprint_line(t_socket_client *client);
 void					print_prompt(t_socket_client *client);
-void					print_current_command(t_socket_client *client, int start);
+void					print_current_command(t_socket_client *client,\
+						int start);
 
 /*
 ** commands
@@ -145,6 +146,11 @@ int						check_mp_cmd(t_socket_client *client, char *cmd);
 int						check_connect_cmd(t_socket_client *client, char *cmd);
 int						check_join_cmd(t_socket_client *client, char *cmd);
 int						check_message_cmd(t_socket_client *client, char *cmd);
+int						check_history_cmd(t_socket_client *client, char *cmd);
+int						check_send_cmd(t_socket_client *client, char *cmd);
+int						check_help_cmd(t_socket_client *client, char *cmd);
+int						check_disconnect_cmd(t_socket_client *client,\
+						char *cmd);
 
 /*
 ** MESSAGES

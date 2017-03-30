@@ -19,12 +19,18 @@ int		check_nick_cmd(t_socket_client *client, char *cmd)
 	if (ft_strncmp(cmd, "/nick", 5) != 0)
 		return (0);
 	if (!(split = ft_split_string(cmd, " ")))
-		return (0);
-	if (array_length(split) != 2 || client->host == NULL)
+		return (1);
+	if (client->host == NULL)
+	{
+		ft_printf("Connect yo to the server\n");
+		free_array(split);
+		return (1);
+	}
+	if (array_length(split) != 2)
 	{
 		ft_printf("/nick [nickname]\n");
 		free_array(split);
-		return (0);
+		return (1);
 	}
 	split[1] = ft_replace(split[1], "|", "_");
 	send_message(client, client->serialize("NC%s", split[1]));

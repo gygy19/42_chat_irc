@@ -19,12 +19,12 @@ int		check_who_cmd(t_socket_client *client, char *cmd)
 	if (client->channel == NULL)
 	{
 		ft_printf("You is not on a channel\n");
-		return (0);
+		return (1);
 	}
 	if (client->host == NULL)
 	{
 		ft_printf("Yo is not not connected on server\n");
-		return (0);
+		return (1);
 	}
 	client->send(client, client->serialize("CW"));
 	return (1);

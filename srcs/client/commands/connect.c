@@ -61,6 +61,20 @@ static int	check_valide_ip(char **split, char *final_cmd)
 	return (1);
 }
 
+static void	disconnect_if_connected(t_socket_client *client)
+{
+	if (client->host != NULL)
+	{
+		ft_printf("Server disconnection %s:%d\n", client->host, client->port);
+		close(client->sockfd);
+		ft_strdel(&client->host);
+		client->host = NULL;
+		client->events[1].fd = 0;
+		client->events[1].read = read_keys;
+		clean_channels(client);
+	}
+}
+
 int			check_connect_cmd(t_socket_client *client, char *cmd)
 {
 	char	**split;
@@ -70,12 +84,12 @@ int			check_connect_cmd(t_socket_client *client, char *cmd)
 		return (0);
 	final_cmd = ft_replace(ft_strdup(cmd), ":", " ");
 	split = ft_split_string(final_cmd, " ");
+	disconnect_if_connected(client);
 	if (!check_array_len(split, final_cmd))
 		return (1);
 	if (!check_valide_ip(split, final_cmd))
 		return (1);
-	if (!open_socket_connection(client, split[1], ft_atoi(split[2])))
-		ft_printf("Error during connection\n");
+	open_socket_connection(client, split[1], ft_atoi(split[2]));
 	ft_strdel(&final_cmd);
 	free_array(split);
 	return (1);

@@ -12,6 +12,28 @@
 
 #include "irc_client.h"
 
+void			print_current_command(t_socket_client *client, int start)
+{
+	int end_line;
+
+	end_line = ft_strlen(client->current_cmd->cmd +\
+		client->current_cmd->cursor_pos);
+	if (start && ft_strlen(client->current_cmd->cmd) > 0)
+	{
+		ft_putstr("\033[K");
+		ft_putstr(client->current_cmd->cmd);
+		ft_printf("\033[%dD", end_line - 1);
+	}
+	else if (!start && client->current_cmd->cursor_pos <\
+		ft_strlen(client->current_cmd->cmd))
+	{
+		ft_putstr("\033[K");
+		ft_putstr(client->current_cmd->cmd +\
+			client->current_cmd->cursor_pos);
+		ft_printf("\033[%dD", end_line);
+	}
+}
+
 void			print_prompt(t_socket_client *client)
 {
 	ft_putstr("\n");

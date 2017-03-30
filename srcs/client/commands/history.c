@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   leave.c                                            :+:      :+:    :+:   */
+/*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/18 19:14:40 by jguyet            #+#    #+#             */
-/*   Updated: 2017/03/18 19:14:41 by jguyet           ###   ########.fr       */
+/*   Created: 2017/03/30 11:26:36 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/30 11:26:37 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_client.h"
 
-int		check_leave_cmd(t_socket_client *client, char *cmd)
+int		check_history_cmd(t_socket_client *client, char *cmd)
 {
-	if (ft_strcmp(cmd, "/leave") != 0)
+	t_cmds	*command;
+	int		id;
+
+	if (ft_strcmp(cmd, "/history") != 0)
 		return (0);
-	if (client->channel == NULL)
+	id = 1;
+	command = client->cmds;
+	while (command)
 	{
-		ft_printf("You is not on a channel\n");
-		return (1);
+		ft_printf("[%d]:%s\n", id, command->cmd);
+		id++;
+		command = command->right;
 	}
-	if (client->host == NULL)
-	{
-		ft_printf("Yo is not not connected on server\n");
-		return (1);
-	}
-	client->send(client, client->serialize("CL"));
 	return (1);
 }

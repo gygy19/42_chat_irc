@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   leave.c                                            :+:      :+:    :+:   */
+/*   send.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/18 19:14:40 by jguyet            #+#    #+#             */
-/*   Updated: 2017/03/18 19:14:41 by jguyet           ###   ########.fr       */
+/*   Created: 2017/03/30 11:36:15 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/30 11:36:16 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc_client.h"
 
-int		check_leave_cmd(t_socket_client *client, char *cmd)
+int		check_send_cmd(t_socket_client *client, char *cmd)
 {
-	if (ft_strcmp(cmd, "/leave") != 0)
+	char	**split;
+
+	if (ft_strncmp(cmd, "/send", 5) != 0)
 		return (0);
-	if (client->channel == NULL)
+	if (!(split = ft_split_string(cmd, " ")))
+		return (1);
+	if (array_length(split) != 2 || client->host == NULL)
 	{
-		ft_printf("You is not on a channel\n");
+		ft_printf("/send <packet>\n");
+		free_array(split);
 		return (1);
 	}
-	if (client->host == NULL)
-	{
-		ft_printf("Yo is not not connected on server\n");
-		return (1);
-	}
-	client->send(client, client->serialize("CL"));
+	send_message(client, client->serialize("%s", split[1]));
+	free_array(split);
 	return (1);
 }

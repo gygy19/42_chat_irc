@@ -65,6 +65,7 @@ SRCCLIENT	=	\
 				srcs/client/data_processor.c								\
 				srcs/client/prompt/command_processor.c						\
 				srcs/client/prompt/command_history.c						\
+				srcs/client/prompt/command_remove.c							\
 				srcs/client/prompt/command_switcher.c						\
 				srcs/client/prompt/prompt_putting.c							\
 				srcs/client/prompt/prompt_putting_channels.c				\
@@ -78,6 +79,10 @@ SRCCLIENT	=	\
 				srcs/client/commands/mp.c									\
 				srcs/client/commands/connect.c								\
 				srcs/client/commands/message.c								\
+				srcs/client/commands/history.c								\
+				srcs/client/commands/send.c									\
+				srcs/client/commands/help.c									\
+				srcs/client/commands/disconnect.c							\
 				srcs/client/lib/handler.c									\
 				srcs/client/lib/socket.c									\
 				srcs/client/message/channel_action.c						\

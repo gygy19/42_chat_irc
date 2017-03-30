@@ -17,9 +17,9 @@ int		check_message_cmd(t_socket_client *client, char *cmd)
 	if (cmd[0] == '/')
 		return (0);
 	if (client->host == NULL)
-		return (0);
+		return (1);
 	if (client->channel == NULL)
-		return (0);
+		return (1);
 	client->send(client, client->serialize("CM%s", ft_strdup(cmd)));
 	return (1);
 }
